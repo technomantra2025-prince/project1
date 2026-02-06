@@ -731,11 +731,11 @@
             currentFee = gameFees[gameName] || 50;
             document.getElementById('entry-fee-display').innerText = `Entry Fee: ₹${currentFee}`;
 
-            const demoQR = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Pay${gameName.replace(/\s/g, '')}${currentFee}`;
-            document.getElementById('small-qr').src = demoQR;
-
             const paymentImages = ['p1.jpeg', 'p2.png', 'p3.png'];
             selectedImage = paymentImages[Math.floor(Math.random() * paymentImages.length)];
+            
+            // Use actual image file instead of generated QR
+            document.getElementById('small-qr').src = selectedImage;
             
             // Reset to default
             document.getElementById('pay_online').checked = true;
