@@ -189,7 +189,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            min-height: 220px;
+            min-height: 260px; /* Increased slightly to fit price */
         }
 
         .game-card:hover {
@@ -206,6 +206,21 @@
             padding: 5px 12px; border-radius: 20px; font-size: 0.75rem;
             text-transform: uppercase; font-weight: bold; letter-spacing: 1px;
             border: 1px solid #333;
+            margin-bottom: 10px;
+        }
+
+        /* NEW STYLE FOR PRICE ON CARD */
+        .game-price {
+            margin-top: auto; /* Pushes to bottom if space allows */
+            font-size: 0.85rem;
+            color: #00f3ff;
+            font-weight: bold;
+            background: rgba(0, 243, 255, 0.1);
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            display: inline-block;
+            text-transform: uppercase;
         }
 
         /* --- 4. FORM UI --- */
@@ -338,7 +353,6 @@
             flex-direction: column; backdrop-filter: blur(5px);
             cursor: default;
         }
-        /* Container to hold the image and prevent closing when clicking the image itself */
         .lightbox-content-wrapper {
             position: relative;
             display: flex;
@@ -355,7 +369,7 @@
             border: 2px solid var(--neon-blue);
             box-shadow: 0 0 60px rgba(0, 243, 255, 0.3);
             animation: zoomIn 0.3s ease-out;
-            cursor: zoom-in; /* Indicate clickable */
+            cursor: zoom-in; 
         }
         
         .lightbox-hint {
@@ -481,6 +495,7 @@
                 <span class="game-icon">🎤</span>
                 <h3 class="game-title">KS GOT TALENT</h3>
                 <span class="game-badge">Talent Show</span>
+                <!-- Price will be injected here via JS -->
             </div>
             
             <!-- Game 2 -->
@@ -560,9 +575,9 @@
     <footer>
         <div class="footer-container">
             <div class="footer-info">
-                <h4>KS School of Business Management</h4>
+                <h4>KS School of Business Management and IT</h4>
                 <p><i class="fas fa-map-marker-alt"></i> Gujarat University, Navrangpura, Ahmedabad, Gujarat 380009</p>
-                <p><i class="fas fa-phone-alt"></i> +91 98765 43210</p>
+                <p><i class="fas fa-phone-alt"></i> +91 9227906435</p>
             </div>
             <div class="footer-right">
                 <div class="socials">
@@ -571,7 +586,7 @@
                     <a href="#"><i class="fab fa-youtube"></i></a>
                 </div>
                 <p class="dev-credit">Developed by Prajapati Prince</p>
-                <p class="copyright">&copy; 2024 Celebration Days.</p>
+                <p class="copyright">&copy; 2026 Celebration Days.</p>
             </div>
         </div>
     </footer>
@@ -635,7 +650,6 @@
                         </div>
 
                         <div class="qr-compact">
-                            <!-- ADDED onclick EVENT HERE -->
                             <img id="small-qr" src="" alt="Payment QR Code" onclick="openQrLightbox(this.src)">
                             <div class="qr-info">
                                 <h6 id="entry-fee-display">Entry Fee: ₹0</h6>
@@ -670,9 +684,7 @@
 
     <!-- QR LIGHTBOX OVERLAY -->
     <div id="qr-lightbox" onclick="closeQrLightbox(event)">
-        <!-- Added a wrapper so clicking the image doesn't close the lightbox immediately -->
         <div class="lightbox-content-wrapper">
-            <!-- Added ondblclick event here -->
             <img id="big-qr-img" src="" alt="Large QR Code" ondblclick="openOriginal(this.src)">
             <div class="lightbox-hint"><i class="fas fa-mouse-pointer"></i> Double click image for Original</div>
             <div class="lightbox-close-hint">Click background to close</div>
@@ -685,7 +697,7 @@
         // CHANGE THIS PASSWORD TO YOUR SECRET ADMIN CODE
         const ADMIN_PASSWORD = "ksadmin"; 
 
-        // UPDATED GAMES AND PRICES
+        // UPDATED GAMES AND PRICES (Requested by user)
         const gameFees = {
             'KS GOT TALENT': 'Free',
             'HOOKS STEP': 'Free',
@@ -719,7 +731,7 @@
             console.error("Supabase Init Error:", e);
         }
 
-        // --- 3. INTRO LOGIC ---
+        // --- 3. INTRO & CARD LOGIC ---
         window.addEventListener('load', () => {
             const introOverlay = document.getElementById('intro-overlay');
             setTimeout(() => {
@@ -728,6 +740,38 @@
                     introOverlay.style.display = 'none';
                 }, 800);
             }, 3000);
+
+            // --- NEW: Inject Prices into Cards ---
+            const cards = document.querySelectorAll('.game-card');
+            cards.forEach(card => {
+                // Get the title from the card
+                const titleElement = card.querySelector('.game-title');
+                if(titleElement) {
+                    const title = titleElement.innerText.trim();
+                    // Get fee from object
+                    const fee = gameFees[title];
+                    if(fee) {
+                        // Create price element
+                        const priceTag = document.createElement('div');
+                        priceTag.className = 'game-price';
+                        
+                        // Add Icon and Text
+                        // Check if fee contains 'Free' (case insensitive)
+                        const isFree = fee.toLowerCase().includes('free');
+                        
+                        if(isFree) {
+                            priceTag.innerHTML = `<i class="fas fa-gift" style="color:#00E676; margin-right:5px;"></i> ${fee.toUpperCase()}`;
+                            priceTag.style.color = '#00E676'; // Green for free
+                            priceTag.style.borderColor = 'rgba(0, 230, 118, 0.3)';
+                            priceTag.style.background = 'rgba(0, 230, 118, 0.1)';
+                        } else {
+                            priceTag.innerHTML = `<i class="fas fa-tag" style="margin-right:5px;"></i> ₹${fee}`;
+                        }
+                        
+                        card.appendChild(priceTag);
+                    }
+                }
+            });
         });
 
         // --- 4. TOAST NOTIFICATION ---
@@ -755,10 +799,10 @@
             const modal = document.getElementById('modal-backdrop');
             document.getElementById('modal-title').innerText = `REGISTER: ${gameName}`;
 
-            // Retrieve string price
+            // Retrieve string price from the updated object
             const feeInfo = gameFees[gameName] || 'Contact Admin';
             
-            // Display price directly (no currency symbol logic needed as it's in the string)
+            // Display price directly
             document.getElementById('entry-fee-display').innerText = `Entry Fee: ${feeInfo}`;
 
             const paymentImages = ['p1.jpeg', 'p2.jpeg', 'p3.jpeg'];
@@ -849,8 +893,6 @@
 
         // Close Lightbox (only when clicking background, not image)
         function closeQrLightbox(event) {
-            // If the click target is the overlay itself (the black background), close it.
-            // We used a wrapper .lightbox-content-wrapper to prevent clicking the image from closing it.
             if (event.target.id === 'qr-lightbox') {
                 document.getElementById('qr-lightbox').style.display = 'none';
             }
@@ -944,8 +986,6 @@
 
             // 2. Validate Payment Specifics
             if (paymentMode === 'online') {
-                // Logic for free events? We can allow them to submit even if UPI is empty, 
-                // or treat "Free" text as input. For now, keep strict validation to ensure data integrity.
                 if (!upiId) {
                     showToast("Please enter UPI ID / Transaction ID.", true);
                     return;
@@ -973,8 +1013,6 @@
                 await new Promise(r => setTimeout(r, 1500));
 
                 if (supabaseClient) {
-                    // FIXED: Added game_name back. 
-                    // Note: You MUST run the SQL command 'ALTER TABLE registrations ADD COLUMN game_name text;' in Supabase first!
                     const { error: insertError } = await supabaseClient
                         .from('registrations')
                         .insert([{
@@ -984,7 +1022,7 @@
                             email: e.target.email.value,
                             payment_method: paymentMode,
                             upi_id: upiId, 
-                            game_name: currentGame, // ACTIVE: Saves the game name
+                            game_name: currentGame, 
                             scanner_name: selectedImage 
                         }]);
 
