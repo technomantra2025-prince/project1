@@ -256,64 +256,42 @@
             border-radius: 10px;
             border: 1px solid #333;
         }
-        .payment-option {
-            flex: 1;
-            position: relative;
-        }
-        .payment-option input {
-            position: absolute;
-            opacity: 0;
-            cursor: pointer;
-            width: 100%; height: 100%;
-            z-index: 2;
-        }
+        .payment-option { flex: 1; position: relative; }
+        .payment-option input { position: absolute; opacity: 0; cursor: pointer; width: 100%; height: 100%; z-index: 2; }
         .payment-label {
-            display: block;
-            text-align: center;
-            padding: 10px;
-            color: #666;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-            border-radius: 8px;
-            font-size: 0.9rem;
+            display: block; text-align: center; padding: 10px; color: #666;
+            font-weight: bold; cursor: pointer; transition: 0.3s;
+            border-radius: 8px; font-size: 0.9rem;
         }
         .payment-option input:checked + .payment-label {
             background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
-            color: #fff;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            color: #fff; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
         }
 
         .add-participant-btn {
-            background: transparent;
-            border: 1px dashed var(--neon-blue);
-            color: var(--neon-blue);
-            padding: 10px;
-            width: 100%;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            transition: 0.3s;
-            margin-bottom: 15px;
-            font-weight: 600;
+            background: transparent; border: 1px dashed var(--neon-blue);
+            color: var(--neon-blue); padding: 10px; width: 100%;
+            border-radius: 8px; cursor: pointer; font-size: 0.85rem;
+            transition: 0.3s; margin-bottom: 15px; font-weight: 600;
         }
         .add-participant-btn:hover { background: rgba(0, 243, 255, 0.1); border-color: var(--neon-purple); color: var(--neon-purple); }
 
         /* Online Payment Section */
-        #online-payment-section, #cash-password-section {
-            animation: fadeIn 0.4s ease;
-        }
+        #online-payment-section, #cash-password-section { animation: fadeIn 0.4s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
         .qr-compact {
             background: #0b0c10; border-radius: 10px; padding: 15px;
             display: flex; align-items: center; gap: 15px; margin-bottom: 20px; border: 1px solid #333;
         }
-        .qr-compact img {
-            width: 70px; height: 70px; border-radius: 5px; border: 1px solid #444;
-            cursor: zoom-in; transition: 0.2s; object-fit: cover;
+        
+        /* UPDATED QR IMAGE STYLING */
+        #small-qr {
+            width: 80px; height: 80px; border-radius: 5px; border: 1px solid #444;
+            transition: 0.2s; object-fit: cover; cursor: zoom-in;
         }
-        .qr-compact img:hover { border-color: var(--neon-blue); transform: scale(1.05); }
+        #small-qr:hover { border-color: var(--neon-blue); transform: scale(1.05); }
+
         .qr-info h6 { margin: 0; color: var(--neon-gold); font-family: 'Orbitron'; font-size: 0.95rem; }
         .qr-info p { margin: 3px 0 0; font-size: 0.8rem; color: #888; }
 
@@ -357,15 +335,47 @@
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.95); z-index: 5000;
             display: none; justify-content: center; align-items: center;
-            flex-direction: column; cursor: pointer; backdrop-filter: blur(5px);
+            flex-direction: column; backdrop-filter: blur(5px);
+            cursor: default;
         }
-        #qr-lightbox img {
-            max-width: 90%; max-height: 80%; border-radius: 15px;
+        /* Container to hold the image and prevent closing when clicking the image itself */
+        .lightbox-content-wrapper {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 90%;
+            max-height: 85%;
+        }
+
+        #big-qr-img {
+            max-width: 100%;
+            max-height: 70vh;
+            border-radius: 15px;
             border: 2px solid var(--neon-blue);
-            box-shadow: 0 0 60px rgba(0, 243, 255, 0.2);
+            box-shadow: 0 0 60px rgba(0, 243, 255, 0.3);
             animation: zoomIn 0.3s ease-out;
+            cursor: zoom-in; /* Indicate clickable */
         }
-        #qr-lightbox p { margin-top: 20px; color: #aaa; letter-spacing: 1px; font-size: 0.9rem;}
+        
+        .lightbox-hint {
+            margin-top: 15px;
+            color: #aaa;
+            font-family: 'Rajdhani';
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            background: rgba(255,255,255,0.05);
+            padding: 8px 16px;
+            border-radius: 20px;
+            text-align: center;
+        }
+        
+        .lightbox-close-hint {
+            margin-top: 10px;
+            color: #555;
+            font-size: 0.8rem;
+        }
+
         @keyframes zoomIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
         /* --- 7. FIREWORKS CANVAS --- */
@@ -613,11 +623,11 @@
                         </div>
 
                         <div class="qr-compact">
-                            <img id="small-qr" src="" alt="Payment QR Code">
+                            <!-- ADDED onclick EVENT HERE -->
+                            <img id="small-qr" src="" alt="Payment QR Code" onclick="openQrLightbox(this.src)">
                             <div class="qr-info">
                                 <h6 id="entry-fee-display">Entry Fee: ₹0</h6>
-                                <p>Scan QR to pay</p>
-                                <p style="color: var(--neon-blue);">Tap QR to Expand</p>
+                                <p>Tap QR to expand</p>
                             </div>
                         </div>
 
@@ -647,9 +657,14 @@
     </div>
 
     <!-- QR LIGHTBOX OVERLAY -->
-    <div id="qr-lightbox" onclick="closeQrLightbox()">
-        <img id="big-qr-img" src="" alt="Large QR Code">
-        <p>Click anywhere to close</p>
+    <div id="qr-lightbox" onclick="closeQrLightbox(event)">
+        <!-- Added a wrapper so clicking the image doesn't close the lightbox immediately -->
+        <div class="lightbox-content-wrapper">
+            <!-- Added ondblclick event here -->
+            <img id="big-qr-img" src="" alt="Large QR Code" ondblclick="openOriginal(this.src)">
+            <div class="lightbox-hint"><i class="fas fa-mouse-pointer"></i> Double click image for Original</div>
+            <div class="lightbox-close-hint">Click background to close</div>
+        </div>
     </div>
 
     <script>
@@ -731,11 +746,16 @@
             currentFee = gameFees[gameName] || 50;
             document.getElementById('entry-fee-display').innerText = `Entry Fee: ₹${currentFee}`;
 
-            const paymentImages = ['p1.jpeg', 'p2.png', 'p3.png'];
+            const paymentImages = ['p1.jpeg', 'p2.jpeg', 'p3.jpeg'];
             selectedImage = paymentImages[Math.floor(Math.random() * paymentImages.length)];
             
             // Use actual image file instead of generated QR
             document.getElementById('small-qr').src = selectedImage;
+            document.getElementById('small-qr').onerror = function() {
+                // Fallback if local files aren't found for the demo
+                console.error("QR image not found: " + selectedImage);
+                this.src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=example@upi&pn=EsportsEvent";
+            };
             
             // Reset to default
             document.getElementById('pay_online').checked = true;
@@ -769,13 +789,13 @@
                 cashSection.style.display = 'none';
                 upiInput.required = true;
                 adminPass.required = false;
-                adminPass.value = ''; // Clear password when switching
+                adminPass.value = ''; 
             } else {
                 onlineSection.style.display = 'none';
                 cashSection.style.display = 'block';
                 upiInput.required = false;
                 upiInput.value = '';
-                adminPass.required = true; // Make password required for cash
+                adminPass.required = true; 
             }
         }
 
@@ -801,19 +821,29 @@
             }
         }
 
-        // --- 6. QR LIGHTBOX LOGIC ---
-        const smallQr = document.getElementById('small-qr');
-        const lightbox = document.getElementById('qr-lightbox');
-        const bigQrImg = document.getElementById('big-qr-img');
-
-        smallQr.addEventListener('click', function (e) {
-            e.stopPropagation();
-            bigQrImg.src = smallQr.src;
+        // --- 6. QR LIGHTBOX LOGIC (UPDATED) ---
+        
+        // Single click on Small QR -> Opens Big Lightbox
+        function openQrLightbox(src) {
+            const lightbox = document.getElementById('qr-lightbox');
+            const bigImg = document.getElementById('big-qr-img');
+            
+            bigImg.src = src;
             lightbox.style.display = 'flex';
-        });
+        }
 
-        function closeQrLightbox() {
-            lightbox.style.display = 'none';
+        // Close Lightbox (only when clicking background, not image)
+        function closeQrLightbox(event) {
+            // If the click target is the overlay itself (the black background), close it.
+            // We used a wrapper .lightbox-content-wrapper to prevent clicking the image from closing it.
+            if (event.target.id === 'qr-lightbox') {
+                document.getElementById('qr-lightbox').style.display = 'none';
+            }
+        }
+
+        // Double click on Big Image -> Opens Original in New Tab
+        function openOriginal(src) {
+            window.open(src, '_blank');
         }
 
         // --- 7. FIREWORKS LOGIC ---
