@@ -1,22 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Pro Esports Celebration Day</title>
-    
+
     <!-- LIBRARIES -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- SUPABASE JS CLIENT -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
-    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&display=swap"
+        rel="stylesheet">
+
     <style>
-        /* --- 0. INTRO ANIMATION (SINGLE LINE REVEAL) --- */
+        /* --- 0. INTRO ANIMATION --- */
         #intro-overlay {
             position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
             background: #000;
             z-index: 99999;
             display: flex;
@@ -35,36 +41,17 @@
         .welcome-text {
             font-family: 'Orbitron', sans-serif;
             font-weight: 900;
-            font-size: 5rem; /* Large size */
+            font-size: clamp(2rem, 10vw, 5rem);
             white-space: nowrap;
             color: #fff;
-            text-shadow: 
-                0 0 5px #fff,
-                0 0 20px var(--neon-blue),
-                0 0 40px var(--neon-purple);
-            
-            /* The Animation: Slide up + Fade in */
+            text-shadow: 0 0 10px #00f3ff, 0 0 20px #bc13fe;
             animation: cinematicReveal 2.5s ease-out forwards;
         }
 
         @keyframes cinematicReveal {
-            0% {
-                transform: translateY(50px) scale(0.9);
-                opacity: 0;
-                filter: blur(10px);
-            }
-            100% {
-                transform: translateY(0) scale(1);
-                opacity: 1;
-                filter: blur(0);
-            }
+            0% { transform: translateY(50px) scale(0.9); opacity: 0; filter: blur(10px); }
+            100% { transform: translateY(0) scale(1); opacity: 1; filter: blur(0); }
         }
-
-        /* Mobile adjustment for text size */
-        @media (max-width: 768px) {
-            .welcome-text { font-size: 3rem; }
-        }
-
 
         /* --- 1. RESET & BASICS --- */
         :root {
@@ -86,30 +73,28 @@
             display: flex;
             flex-direction: column;
             position: relative;
-            transition: background 0.5s ease;
         }
 
         /* --- BACKGROUND FX --- */
         .bg-fx-container {
             position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             z-index: -1;
             overflow: hidden;
             pointer-events: none;
-            transition: opacity 0.5s ease;
         }
 
         .pattern-bg {
             width: 100%;
             height: 100%;
-            background: repeating-linear-gradient(
-                135deg,
-                #232526 0px,
-                #232526 60px,
-                #23252699 70px,
-                #414345 130px
-            );
+            background: repeating-linear-gradient(135deg,
+                    #232526 0px,
+                    #232526 60px,
+                    #23252699 70px,
+                    #414345 130px);
         }
 
         .cube-svg {
@@ -129,31 +114,11 @@
             to { transform: translateY(-20%) scale(1.02) rotate(1deg); }
         }
 
-        /* --- OLD/COMPLETED BACKGROUND STATE --- */
-        body.background-completed {
-            background: url('https://images.unsplash.com/photo-1614680376593-902f74cf0d41?q=80&w=2574&auto=format&fit=crop') no-repeat center center fixed;
-            background-size: cover;
-        }
-
-        body.background-completed::before {
-            content: '';
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(8, 8, 12, 0.8);
-            z-index: -1;
-            pointer-events: none;
-        }
-
-        body.background-completed .bg-fx-container {
-            opacity: 0;
-            pointer-events: none;
-        }
-
         /* --- 2. HERO SECTION --- */
         .hero-section {
             text-align: center;
             padding-top: 80px;
-            padding-bottom: 60px;
+            padding-bottom: 40px;
             position: relative;
             z-index: 5;
         }
@@ -161,7 +126,7 @@
         .main-title {
             font-family: 'Orbitron', sans-serif;
             font-weight: 900;
-            font-size: clamp(3rem, 12vw, 7rem);
+            font-size: clamp(2.5rem, 10vw, 6rem);
             line-height: 0.9;
             text-transform: uppercase;
             background: linear-gradient(180deg, #ffffff 0%, #a5a5a5 100%);
@@ -175,7 +140,7 @@
         .slogan-text {
             font-family: 'Orbitron', sans-serif;
             font-weight: 700;
-            font-size: clamp(1.5rem, 5vw, 3rem);
+            font-size: clamp(1.2rem, 4vw, 2.5rem);
             color: transparent;
             -webkit-text-stroke: 1px var(--neon-purple);
             text-transform: uppercase;
@@ -184,411 +149,291 @@
             position: relative;
             display: inline-block;
         }
+
         .slogan-text::after {
             content: 'GAME FOR DAYS';
             position: absolute;
-            left: 0; top: 0; width: 100%; height: 100%;
+            left: 0; top: 0;
+            width: 100%; height: 100%;
             color: var(--neon-purple);
             opacity: 0.2;
             z-index: -1;
             transform: translate(4px, 4px);
         }
 
-        /* --- 3. GAME CARDS (GOLD HOVER) --- */
-        .games-container {
-            padding: 0 20px;
-            margin-bottom: 60px;
-            z-index: 5;
-        }
-
+        /* --- 3. GAME CARDS --- */
+        .games-container { padding: 0 20px; margin-bottom: 60px; z-index: 5; }
         .games-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(3, 1fr); 
             gap: 25px;
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 0 auto;
         }
-
-        @media (max-width: 768px) {
-            .games-grid { grid-template-columns: 1fr; }
-            .hero-section { padding-bottom: 40px; }
-        }
+        
+        @media (max-width: 992px) { .games-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 768px) { .games-grid { grid-template-columns: 1fr; } }
 
         .game-card {
             background: linear-gradient(160deg, #1f222e 0%, #13151c 100%);
             border: 1px solid #333;
             border-radius: 15px;
-            padding: 30px;
+            padding: 25px;
             text-align: center;
             transition: all 0.3s ease;
             cursor: pointer;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 220px;
         }
 
         .game-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-8px);
             border-color: var(--neon-gold);
             background: linear-gradient(160deg, #2a2e3d 0%, #1a1c24 100%);
-            box-shadow: 0 15px 40px rgba(255, 215, 0, 0.3);
+            box-shadow: 0 20px 50px rgba(255, 215, 0, 0.2);
         }
 
-        .game-icon {
-            font-size: 4rem;
-            margin-bottom: 20px;
-            display: block;
-            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.5));
-        }
-
-        .game-title {
-            font-family: 'Orbitron';
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #fff;
-            margin-bottom: 5px;
-        }
-
+        .game-icon { font-size: 3.5rem; margin-bottom: 15px; display: block; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.5)); }
+        .game-title { font-family: 'Orbitron'; font-size: 1.2rem; font-weight: 700; color: #fff; margin-bottom: 8px; line-height: 1.2;}
         .game-badge {
-            background: #333;
-            color: var(--neon-gold);
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            font-weight: bold;
-        }
-
-        /* --- 3.5 SPONSOR PANEL --- */
-        .sponsors-section {
-            position: relative;
-            z-index: 5;
-            padding: 40px 0;
-            background: rgba(0,0,0,0.3);
-            border-top: 1px solid #222;
-            border-bottom: 1px solid #222;
-            margin-bottom: 40px;
-            overflow: hidden;
-        }
-
-        .sponsors-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .sponsors-header h3 {
-            font-family: 'Orbitron';
-            color: #666;
-            font-size: 1.2rem;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-        }
-
-        .sponsors-header span {
-            color: var(--neon-blue);
-            font-weight: bold;
-        }
-
-        .marquee-container {
-            width: 100%;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .marquee-track {
-            display: flex;
-            width: max-content;
-            animation: scroll 30s linear infinite;
-        }
-
-        .marquee-container:hover .marquee-track {
-            animation-play-state: paused;
-        }
-
-        .sponsor-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            width: 200px;
-            margin: 0 30px;
-            padding: 20px;
-            border: 1px solid rgba(255,255,255,0.1);
-            background: rgba(255,255,255,0.03);
-            border-radius: 10px;
-            transition: 0.3s;
-            cursor: pointer;
-        }
-
-        .sponsor-item:hover {
-            background: rgba(255,255,255,0.08);
-            border-color: var(--neon-gold);
-            transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.1);
-        }
-
-        .sponsor-item i {
-            font-size: 2.5rem;
-            color: #555;
-            margin-bottom: 10px;
-            transition: 0.3s;
-        }
-
-        .sponsor-item:hover i {
-            color: var(--neon-gold);
-        }
-
-        .sponsor-name {
-            font-family: 'Orbitron';
-            font-size: 0.9rem;
-            color: #888;
-            font-weight: 700;
-        }
-        
-        .sponsor-item:hover .sponsor-name {
-            color: #fff;
-        }
-
-        @keyframes scroll {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-
-        @media (max-width: 768px) {
-            .marquee-track {
-                animation: none;
-                flex-wrap: wrap;
-                justify-content: center;
-                width: 100%;
-            }
-            .sponsor-item {
-                width: 45%;
-                margin: 10px;
-            }
+            background: #252830; color: var(--neon-gold);
+            padding: 5px 12px; border-radius: 20px; font-size: 0.75rem;
+            text-transform: uppercase; font-weight: bold; letter-spacing: 1px;
+            border: 1px solid #333;
         }
 
         /* --- 4. FORM UI --- */
         #modal-backdrop {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(5px);
-            z-index: 2000;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
+            background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px); z-index: 2000;
+            display: none; justify-content: center; align-items: center; padding: 20px;
         }
-
         .modal-form {
-            background: var(--panel-color);
-            width: 100%;
-            max-width: 450px;
-            height: 85vh;
-            max-height: 800px;
-            border-radius: 20px;
-            border: 1px solid #333;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 0 50px rgba(0,0,0,0.8);
-            position: relative;
-            animation: popUp 0.3s ease-out;
+            background: var(--panel-color); width: 100%; max-width: 480px;
+            height: 90vh; max-height: 900px; border-radius: 20px;
+            border: 1px solid #333; display: flex; flex-direction: column;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.9); position: relative;
+            animation: popUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
+        @keyframes popUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-        @keyframes popUp { from {transform: scale(0.9); opacity: 0;} to {transform: scale(1); opacity: 1;} }
-
-        .modal-body-scroll {
-            padding: 25px;
-            overflow-y: auto;
-            flex: 1;
-        }
+        .modal-body-scroll { padding: 25px; overflow-y: auto; flex: 1; }
         .modal-body-scroll::-webkit-scrollbar { width: 6px; }
         .modal-body-scroll::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
 
         .modal-header {
-            padding: 20px 25px;
-            border-bottom: 1px solid #2a2d36;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #1a1d26;
-            border-radius: 20px 20px 0 0;
+            padding: 20px 25px; border-bottom: 1px solid #2a2d36;
+            display: flex; justify-content: space-between; align-items: center;
+            background: #1a1d26; border-radius: 20px 20px 0 0;
         }
-        .modal-header h3 {
-            font-family: 'Orbitron';
-            font-size: 1.1rem;
-            color: var(--neon-blue);
-            margin: 0;
-            text-transform: uppercase;
-        }
-        .close-btn {
-            background: none; border: none; color: #666; font-size: 1.5rem; cursor: pointer;
-        }
-        .close-btn:hover { color: #fff; }
+        .modal-header h3 { font-family: 'Orbitron'; font-size: 1.2rem; color: var(--neon-blue); margin: 0; text-transform: uppercase; }
+        .close-btn { background: none; border: none; color: #666; font-size: 1.5rem; cursor: pointer; transition: 0.2s; }
+        .close-btn:hover { color: #fff; transform: rotate(90deg); }
 
         .form-group { margin-bottom: 20px; }
-        .form-label {
-            display: block; color: #aaa; font-size: 0.85rem; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;
-        }
+        .form-label { display: block; color: #aaa; font-size: 0.85rem; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
         .form-input {
-            width: 100%;
+            width: 100%; background: #0b0c10; border: 1px solid #333;
+            padding: 12px 15px; color: #fff; border-radius: 8px;
+            font-family: 'Rajdhani'; font-size: 1rem; transition: 0.3s;
+            margin-bottom: 10px; 
+        }
+        .form-input:focus { outline: none; border-color: var(--neon-purple); box-shadow: 0 0 15px rgba(188, 19, 254, 0.2); background: #0e0f14; }
+
+        /* Payment Toggle Styles */
+        .payment-toggle {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
             background: #0b0c10;
+            padding: 5px;
+            border-radius: 10px;
             border: 1px solid #333;
-            padding: 12px 15px;
-            color: #fff;
-            border-radius: 8px;
-            font-family: 'Rajdhani';
-            font-size: 1rem;
+        }
+        .payment-option {
+            flex: 1;
+            position: relative;
+        }
+        .payment-option input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            width: 100%; height: 100%;
+            z-index: 2;
+        }
+        .payment-label {
+            display: block;
+            text-align: center;
+            padding: 10px;
+            color: #666;
+            font-weight: bold;
+            cursor: pointer;
             transition: 0.3s;
+            border-radius: 8px;
+            font-size: 0.9rem;
         }
-        .form-input:focus {
-            outline: none;
-            border-color: var(--neon-purple);
-            box-shadow: 0 0 10px rgba(188, 19, 254, 0.2);
+        .payment-option input:checked + .payment-label {
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+            color: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
         }
+
+        .add-participant-btn {
+            background: transparent;
+            border: 1px dashed var(--neon-blue);
+            color: var(--neon-blue);
+            padding: 10px;
+            width: 100%;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: 0.3s;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        .add-participant-btn:hover { background: rgba(0, 243, 255, 0.1); border-color: var(--neon-purple); color: var(--neon-purple); }
+
+        /* Online Payment Section */
+        #online-payment-section, #cash-password-section {
+            animation: fadeIn 0.4s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
         .qr-compact {
-            background: #0b0c10;
-            border-radius: 10px;
-            padding: 15px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
-            border: 1px solid #333;
+            background: #0b0c10; border-radius: 10px; padding: 15px;
+            display: flex; align-items: center; gap: 15px; margin-bottom: 20px; border: 1px solid #333;
         }
-        
-        .qr-compact img { 
-            width: 70px; 
-            height: 70px; 
-            border-radius: 5px; 
-            border: 1px solid #444; 
-            cursor: zoom-in;
-            transition: 0.2s;
-            object-fit: cover;
+        .qr-compact img {
+            width: 70px; height: 70px; border-radius: 5px; border: 1px solid #444;
+            cursor: zoom-in; transition: 0.2s; object-fit: cover;
         }
-        .qr-compact img:hover {
-            border-color: var(--neon-blue);
-            transform: scale(1.05);
-        }
-
-        .qr-info h6 { margin: 0; color: var(--neon-gold); font-family: 'Orbitron'; font-size: 0.9rem; }
-        .qr-info p { margin: 3px 0 0; font-size: 0.75rem; color: #888; }
+        .qr-compact img:hover { border-color: var(--neon-blue); transform: scale(1.05); }
+        .qr-info h6 { margin: 0; color: var(--neon-gold); font-family: 'Orbitron'; font-size: 0.95rem; }
+        .qr-info p { margin: 3px 0 0; font-size: 0.8rem; color: #888; }
 
         .upload-compact {
-            border: 2px dashed #333;
-            border-radius: 10px;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-            background: #0f1115;
-            transition: 0.3s;
+            border: 2px dashed #333; border-radius: 10px; padding: 25px;
+            text-align: center; cursor: pointer; background: #0f1115; transition: 0.3s;
         }
-        .upload-compact:hover { border-color: #666; background: #15181e; }
-        .upload-compact i { font-size: 1.5rem; color: #555; margin-bottom: 5px; }
+        .upload-compact:hover { border-color: var(--neon-blue); background: #15181e; }
+        .upload-compact i { font-size: 1.8rem; color: #555; margin-bottom: 8px; display: block; }
         .upload-compact p { font-size: 0.85rem; color: #777; margin: 0; }
 
         .btn-submit {
-            width: 100%;
-            padding: 14px;
+            width: 100%; padding: 15px;
             background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            font-family: 'Orbitron';
-            font-weight: 900;
-            font-size: 1rem;
-            text-transform: uppercase;
-            cursor: pointer;
-            margin-top: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            color: #fff; border: none; border-radius: 8px;
+            font-family: 'Orbitron'; font-weight: 900; font-size: 1rem;
+            text-transform: uppercase; cursor: pointer; margin-top: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3); transition: 0.3s;
+            position: relative; overflow: hidden;
         }
-        .btn-submit:hover { opacity: 0.9; transform: translateY(-2px); }
-        .btn-submit:disabled { background: #333; color: #666; cursor: not-allowed; transform: none; }
+        .btn-submit:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 0 20px rgba(188, 19, 254, 0.4); }
+        .btn-submit:disabled { background: #333; color: #666; cursor: not-allowed; transform: none; box-shadow: none; }
 
-        /* --- 5. TOAST NOTIFICATIONS --- */
+        /* --- 5. TOAST --- */
         .toast-container {
             position: fixed; top: 20px; right: 20px; z-index: 3000;
             display: flex; flex-direction: column; gap: 10px;
         }
         .toast {
-            background: #1f222e;
-            color: #fff;
-            padding: 15px 20px;
-            border-left: 4px solid var(--neon-blue);
-            border-radius: 4px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
-            min-width: 280px;
-            animation: slideIn 0.3s ease;
-            display: flex; align-items: center; gap: 10px;
+            background: #1f222e; color: #fff; padding: 15px 25px;
+            border-left: 4px solid var(--neon-blue); border-radius: 4px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.6);
+            min-width: 300px; animation: slideIn 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            display: flex; align-items: center; gap: 12px; font-weight: 500;
         }
-        .toast.error { border-left-color: #ff4444; }
-        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+        .toast.error { border-left-color: #ff0055; }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
         /* --- 6. QR LIGHTBOX --- */
         #qr-lightbox {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            z-index: 5000;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            cursor: pointer;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.95); z-index: 5000;
+            display: none; justify-content: center; align-items: center;
+            flex-direction: column; cursor: pointer; backdrop-filter: blur(5px);
         }
-
         #qr-lightbox img {
-            max-width: 90%;
-            max-height: 80%;
-            border-radius: 15px;
+            max-width: 90%; max-height: 80%; border-radius: 15px;
             border: 2px solid var(--neon-blue);
-            box-shadow: 0 0 50px rgba(0, 243, 255, 0.2);
+            box-shadow: 0 0 60px rgba(0, 243, 255, 0.2);
             animation: zoomIn 0.3s ease-out;
         }
-
-        #qr-lightbox p {
-            margin-top: 20px;
-            color: #fff;
-            font-family: 'Orbitron';
-            letter-spacing: 2px;
-            background: rgba(0,0,0,0.5);
-            padding: 5px 15px;
-            border-radius: 20px;
-        }
-
-        @keyframes zoomIn {
-            from { transform: scale(0.5); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
+        #qr-lightbox p { margin-top: 20px; color: #aaa; letter-spacing: 1px; font-size: 0.9rem;}
+        @keyframes zoomIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
         /* --- 7. FIREWORKS CANVAS --- */
         #fireworks-canvas {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            pointer-events: none;
-            z-index: 9999;
-            display: none;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 9999; display: none;
         }
 
-        /* --- FOOTER --- */
-        footer { margin-top: auto; background: #000; padding: 30px; text-align: center; color: #555; border-top: 1px solid #111; position: relative; z-index: 5;}
-        footer p { font-size: 0.9rem; margin: 0; }
-        .socials a { color: #555; font-size: 1.2rem; margin: 0 10px; transition: 0.3s; }
-        .socials a:hover { color: var(--neon-purple); }
-
+        /* --- 8. FOOTER --- */
+        footer {
+            margin-top: auto;
+            background: #050505;
+            border-top: 1px solid #222;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 5;
+        }
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+        .footer-info h4 {
+            font-family: 'Orbitron';
+            color: #fff;
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+        }
+        .footer-info p {
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .footer-info i { color: var(--neon-purple); width: 20px; }
+        .footer-right { text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 15px; }
+        .socials { display: flex; gap: 15px; }
+        .socials a {
+            color: #fff; font-size: 1.3rem; background: rgba(255,255,255,0.05);
+            width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+            border-radius: 50%; transition: 0.3s; text-decoration: none;
+        }
+        .socials a:hover { color: var(--neon-blue); background: rgba(0, 243, 255, 0.1); transform: translateY(-3px); }
+        .dev-credit { font-size: 0.85rem; color: var(--neon-blue); font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+        .copyright { font-size: 0.8rem; color: #555; }
+        @media (max-width: 768px) {
+            .footer-container { flex-direction: column; text-align: center; }
+            .footer-info p { justify-content: center; }
+            .footer-right { text-align: center; align-items: center; width: 100%; }
+        }
     </style>
 </head>
+
 <body>
 
-    <!-- INTRO OVERLAY (SINGLE LINE REVEAL) -->
+    <!-- INTRO OVERLAY -->
     <div id="intro-overlay">
-        <!-- Just one line of text -->
         <h1 class="welcome-text">WELCOME</h1>
     </div>
 
-    <!-- BACKGROUND FX LAYER -->
+    <!-- BACKGROUND FX -->
     <div class="bg-fx-container">
         <div class="pattern-bg"></div>
         <svg class="cube-svg" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
@@ -599,8 +444,7 @@
                 </linearGradient>
             </defs>
             <path fill="url(#grad1)" d="M250,50 L450,150 L450,350 L250,450 L50,350 L50,150 Z" />
-            <path fill="none" stroke="#00f3ff" stroke-width="2" d="M250,50 L450,150 L450,350 L250,450 L50,350 L50,150 Z" opacity="0.5"/>
-            <path fill="none" stroke="#bc13fe" stroke-width="2" d="M250,50 L250,450 M50,150 L450,150 M50,350 L450,350" opacity="0.3"/>
+            <path fill="none" stroke="#00f3ff" stroke-width="2" d="M250,50 L450,150 L450,350 L250,450 L50,350 L50,150 Z" opacity="0.5" />
         </svg>
     </div>
 
@@ -614,84 +458,100 @@
     <div class="hero-section">
         <h1 class="main-title">THE ULTIMATE</h1>
         <div class="slogan-text">GAME FOR DAYS</div>
-        <p style="color: #666; margin-top: 15px; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 2px;">Esports Championship Series</p>
+        <p style="color: #666; margin-top: 15px; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 2px;">
+            Esports Championship Series</p>
     </div>
 
-    <!-- GAMES GRID (6 Cards Total) -->
+    <!-- GAMES GRID -->
     <div class="games-container">
         <div class="games-grid">
+            <!-- Game 1 -->
             <div class="game-card" onclick="openForm('PUBG MOBILE')">
                 <span class="game-icon">🪖</span>
                 <h3 class="game-title">PUBG MOBILE</h3>
                 <span class="game-badge">Squad Mode</span>
             </div>
+            <!-- Game 2 -->
             <div class="game-card" onclick="openForm('FREE FIRE')">
                 <span class="game-icon">🔥</span>
                 <h3 class="game-title">FREE FIRE</h3>
                 <span class="game-badge">Clash Squad</span>
             </div>
+            <!-- Game 3 -->
             <div class="game-card" onclick="openForm('COD MOBILE')">
                 <span class="game-icon">💀</span>
                 <h3 class="game-title">COD MOBILE</h3>
                 <span class="game-badge">TDM Ranked</span>
             </div>
+            <!-- Game 4 -->
             <div class="game-card" onclick="openForm('BGMI')">
                 <span class="game-icon">🇮🇳</span>
                 <h3 class="game-title">BGMI</h3>
                 <span class="game-badge">Classic Erangel</span>
             </div>
-            <!-- NEW CARD 1 -->
+            <!-- Game 5 -->
             <div class="game-card" onclick="openForm('VALORANT')">
                 <span class="game-icon">🎯</span>
                 <h3 class="game-title">VALORANT</h3>
                 <span class="game-badge">5v5 Tactical</span>
             </div>
-            <!-- NEW CARD 2 -->
+            <!-- Game 6 -->
             <div class="game-card" onclick="openForm('CLASH ROYALE')">
                 <span class="game-icon">👑</span>
                 <h3 class="game-title">CLASH ROYALE</h3>
                 <span class="game-badge">1v1 Duel</span>
             </div>
-        </div>
-    </div>
-
-    <!-- SPONSOR PANEL -->
-    <div class="sponsors-section">
-        <div class="sponsors-header">
-            <h3>Official Partners & <span>Sponsors</span></h3>
-        </div>
-        
-        <div class="marquee-container">
-            <div class="marquee-track">
-                <!-- Set 1 -->
-                <div class="sponsor-item"><i class="fas fa-gamepad"></i><span class="sponsor-name">RAZER</span></div>
-                <div class="sponsor-item"><i class="fab fa-twitch"></i><span class="sponsor-name">TWITCH</span></div>
-                <div class="sponsor-item"><i class="fas fa-headset"></i><span class="sponsor-name">STEELSERIES</span></div>
-                <div class="sponsor-item"><i class="fab fa-discord"></i><span class="sponsor-name">DISCORD</span></div>
-                <div class="sponsor-item"><i class="fas fa-bolt"></i><span class="sponsor-name">RED BULL</span></div>
-                <div class="sponsor-item"><i class="fab fa-steam"></i><span class="sponsor-name">STEAM</span></div>
-                <div class="sponsor-item"><i class="fas fa-rocket"></i><span class="sponsor-name">SPACEX</span></div>
-                
-                <!-- Set 2 -->
-                <div class="sponsor-item"><i class="fas fa-gamepad"></i><span class="sponsor-name">RAZER</span></div>
-                <div class="sponsor-item"><i class="fab fa-twitch"></i><span class="sponsor-name">TWITCH</span></div>
-                <div class="sponsor-item"><i class="fas fa-headset"></i><span class="sponsor-name">STEELSERIES</span></div>
-                <div class="sponsor-item"><i class="fab fa-discord"></i><span class="sponsor-name">DISCORD</span></div>
-                <div class="sponsor-item"><i class="fas fa-bolt"></i><span class="sponsor-name">RED BULL</span></div>
-                <div class="sponsor-item"><i class="fab fa-steam"></i><span class="sponsor-name">STEAM</span></div>
-                <div class="sponsor-item"><i class="fas fa-rocket"></i><span class="sponsor-name">SPACEX</span></div>
+            <!-- Game 7 -->
+            <div class="game-card" onclick="openForm('FIFA 24')">
+                <span class="game-icon">⚽</span>
+                <h3 class="game-title">FIFA 24</h3>
+                <span class="game-badge">1v1 Ultimate</span>
+            </div>
+            <!-- Game 8 -->
+            <div class="game-card" onclick="openForm('FORTNITE')">
+                <span class="game-icon">🚀</span>
+                <h3 class="game-title">FORTNITE</h3>
+                <span class="game-badge">Battle Royale</span>
+            </div>
+            <!-- Game 9 -->
+            <div class="game-card" onclick="openForm('CS 2')">
+                <span class="game-icon">🛡️</span>
+                <h3 class="game-title">CS 2</h3>
+                <span class="game-badge">5v5 Competitive</span>
+            </div>
+            <!-- Game 10 -->
+            <div class="game-card" onclick="openForm('APEX LEGENDS')">
+                <span class="game-icon">🔺</span>
+                <h3 class="game-title">APEX LEGENDS</h3>
+                <span class="game-badge">Ranked Trios</span>
+            </div>
+            <!-- Game 11 -->
+            <div class="game-card" onclick="openForm('LEAGUE OF LEGENDS')">
+                <span class="game-icon">👁️</span>
+                <h3 class="game-title">LEAGUE OF LEGENDS</h3>
+                <span class="game-badge">Summoner's Rift</span>
             </div>
         </div>
     </div>
 
     <!-- FOOTER -->
     <footer>
-        <div class="socials">
-            <a href="#"><i class="fab fa-instagram"></i></a>
-            <a href="#"><i class="fab fa-discord"></i></a>
-            <a href="#"><i class="fab fa-youtube"></i></a>
+        <div class="footer-container">
+            <div class="footer-info">
+                <h4>KS School of Business Management</h4>
+                <p><i class="fas fa-map-marker-alt"></i> Gujarat University, Navrangpura, Ahmedabad, Gujarat 380009</p>
+                <p><i class="fas fa-phone-alt"></i> +91 98765 43210</p>
+            </div>
+            <div class="footer-right">
+                <div class="socials">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-discord"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+                <p class="dev-credit">Developed by Prajapati Prince</p>
+                <p class="copyright">&copy; 2024 Celebration Days.</p>
+            </div>
         </div>
-        <p style="margin-top: 15px;">&copy; 2024 Celebration Days. Created by Prince Prajapati.</p>
     </footer>
 
     <!-- MODAL FORM -->
@@ -701,13 +561,32 @@
                 <h3 id="modal-title">REGISTER: GAME</h3>
                 <button class="close-btn" onclick="closeForm()">&times;</button>
             </div>
-            
+
             <div class="modal-body-scroll">
                 <form id="reg-form" onsubmit="submitData(event)">
                     
+                    <!-- PAYMENT MODE TOGGLE -->
                     <div class="form-group">
-                        <label class="form-label">Gamer Name</label>
-                        <input type="text" name="full_name" class="form-input" placeholder="Enter your name" required>
+                        <label class="form-label">Payment Mode</label>
+                        <div class="payment-toggle">
+                            <div class="payment-option">
+                                <input type="radio" name="pay_mode" id="pay_cash" value="cash" onchange="togglePaymentMode()">
+                                <label for="pay_cash" class="payment-label">Cash (Hand)</label>
+                            </div>
+                            <div class="payment-option">
+                                <input type="radio" name="pay_mode" id="pay_online" value="online" checked onchange="togglePaymentMode()">
+                                <label for="pay_online" class="payment-label">Online (UPI)</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- DYNAMIC PARTICIPANT NAMES -->
+                    <div class="form-group">
+                        <label class="form-label">Participant Name(s)</label>
+                        <div id="participants-container">
+                            <input type="text" class="form-input participant-input" placeholder="Enter participant name" required>
+                        </div>
+                        <button type="button" class="add-participant-btn" onclick="addParticipantField()">+ Add Another Participant</button>
                     </div>
 
                     <div class="form-group">
@@ -717,12 +596,8 @@
 
                     <div class="form-group">
                         <label class="form-label">Mobile Number</label>
-                        <input type="tel" name="mobile" class="form-input" 
-                               placeholder="10 digit number" 
-                               pattern="[0-9]{10}" 
-                               maxlength="10" 
-                               title="Please enter exactly 10 digits" 
-                               required>
+                        <input type="tel" name="mobile" class="form-input" placeholder="10 digit number"
+                            pattern="[0-9]{10}" maxlength="10" title="Please enter exactly 10 digits" required>
                     </div>
 
                     <div class="form-group">
@@ -730,23 +605,42 @@
                         <input type="email" name="email" class="form-input" placeholder="For confirmation" required>
                     </div>
 
-                    <div class="qr-compact">
-                        <img id="small-qr" src="" alt="QR Loading...">
-                        <div class="qr-info">
-                            <h6>Entry Fee: ₹50</h6>
-                            <p>Scan QR to pay</p>
-                            <p style="color: var(--neon-blue);">Tap QR to Expand</p>
+                    <!-- ONLINE PAYMENT SECTION -->
+                    <div id="online-payment-section">
+                        <div class="form-group">
+                            <label class="form-label">UPI ID / Transaction ID</label>
+                            <input type="text" id="upi_id" name="upi_id" class="form-input" placeholder="Enter UPI ID or Txn ID">
+                        </div>
+
+                        <div class="qr-compact">
+                            <img id="small-qr" src="" alt="Payment QR Code">
+                            <div class="qr-info">
+                                <h6 id="entry-fee-display">Entry Fee: ₹0</h6>
+                                <p>Scan QR to pay</p>
+                                <p style="color: var(--neon-blue);">Tap QR to Expand</p>
+                            </div>
+                        </div>
+
+                        <div class="upload-compact" onclick="document.getElementById('file-input').click()">
+                            <input type="file" id="file-input" hidden accept="image/*" onchange="updateFileLabel(this)">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p id="file-text">Click to Upload Screenshot</p>
                         </div>
                     </div>
 
-                    <div class="upload-compact" onclick="document.getElementById('file-input').click()">
-                        <input type="file" id="file-input" hidden accept="image/*" required onchange="updateFileLabel(this)">
-                        <i class="fas fa-cloud-upload-alt"></i>
-                        <p id="file-text">Click to Upload Screenshot</p>
+                    <!-- CASH PASSWORD SECTION -->
+                    <div id="cash-password-section" style="display: none;">
+                        <div class="form-group">
+                            <label class="form-label" style="color: #ff0055;">Admin Verification Required</label>
+                            <p style="font-size: 0.8rem; color: #888; margin-bottom: 10px;">Please ask the administrator to enter the code to approve cash payment.</p>
+                            <div style="position: relative;">
+                                <input type="password" id="admin_pass" class="form-input" placeholder="Enter Admin Password" style="padding-left: 40px;">
+                                <i class="fas fa-lock" style="position: absolute; left: 15px; top: 15px; color: #666;"></i>
+                            </div>
+                        </div>
                     </div>
 
                     <button type="submit" class="btn-submit" id="submit-btn">CONFIRM REGISTRATION</button>
-
                 </form>
             </div>
         </div>
@@ -759,111 +653,160 @@
     </div>
 
     <script>
-        // --- 0. INTRO LOGIC (SIMPLE HIDE AFTER 3s) ---
+        // --- 1. CONFIGURATION ---
+        
+        // CHANGE THIS PASSWORD TO YOUR SECRET ADMIN CODE
+        const ADMIN_PASSWORD = "ksadmin"; 
+
+        const gameFees = {
+            'PUBG MOBILE': 50,
+            'FREE FIRE': 30,
+            'COD MOBILE': 50,
+            'BGMI': 50,
+            'VALORANT': 100,
+            'CLASH ROYALE': 30,
+            'FIFA 24': 40,
+            'FORTNITE': 50,
+            'CS 2': 100,
+            'APEX LEGENDS': 50,
+            'LEAGUE OF LEGENDS': 60
+        };
+
+        let currentFee = 0;
+        let currentGame = '';
+
+        // --- 2. SUPABASE SETUP ---
+        const supabaseUrl = 'https://uttqltazlrfswyflwcnk.supabase.co'; 
+        const supabaseKey = 'sb_publishable_XxPs8fOVApejBKtliDvD4A_6-Z-7PPP';
+        
+        let supabaseClient = null;
+        let selectedImage = ''; 
+
+        try {
+            if (window.supabase) {
+                supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+            } else {
+                console.warn("Supabase library not loaded.");
+            }
+        } catch (e) {
+            console.error("Supabase Init Error:", e);
+        }
+
+        // --- 3. INTRO LOGIC ---
         window.addEventListener('load', () => {
             const introOverlay = document.getElementById('intro-overlay');
-            
-            // Wait 3 seconds then fade out
             setTimeout(() => {
                 introOverlay.classList.add('hidden');
                 setTimeout(() => {
                     introOverlay.style.display = 'none';
-                }, 800); 
+                }, 800);
             }, 3000);
         });
 
-        // --- 1. SUPABASE SETUP ---
-        const supabaseUrl = 'https://uttqltazlrfswyflwcnk.supabase.co';
-        const supabaseKey = 'sb_publishable_XxPs8fOVApejBKtliDvD4A_6-Z-7PPP';
-        let sbClient = null;
-        let currentQrId = null;
-
-        try {
-            if(window.supabase) sbClient = window.supabase.createClient(supabaseUrl, supabaseKey);
-        } catch(e) { console.log("Supabase not loaded"); }
-
-        // --- 2. TOAST NOTIFICATION SYSTEM ---
-        function showToast(msg, type='success') {
+        // --- 4. TOAST NOTIFICATION ---
+        function showToast(msg, isError = false) {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
+            toast.className = isError ? 'toast error' : 'toast';
             
-            const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
-            const color = type === 'success' ? 'var(--neon-blue)' : '#ff4444';
-
-            toast.innerHTML = `<i class="fas ${icon}" style="color:${color}"></i> <span>${msg}</span>`;
+            let icon = isError ? '<i class="fas fa-exclamation-circle" style="color:#ff0055"></i>' : '<i class="fas fa-check-circle" style="color:var(--neon-blue)"></i>';
             
+            toast.innerHTML = `${icon} <span>${msg}</span>`;
             container.appendChild(toast);
+            
             setTimeout(() => {
                 toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                toast.style.transition = 'all 0.3s ease';
                 setTimeout(() => toast.remove(), 300);
-            }, 3000);
+            }, 4000);
         }
 
-        // --- 3. MODAL & QR FETCH LOGIC ---
-        async function openForm(gameName) {
+        // --- 5. MODAL LOGIC ---
+        function openForm(gameName) {
+            currentGame = gameName;
             const modal = document.getElementById('modal-backdrop');
             document.getElementById('modal-title').innerText = `REGISTER: ${gameName}`;
+
+            currentFee = gameFees[gameName] || 50;
+            document.getElementById('entry-fee-display').innerText = `Entry Fee: ₹${currentFee}`;
+
+            const demoQR = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Pay${gameName.replace(/\s/g, '')}${currentFee}`;
+            document.getElementById('small-qr').src = demoQR;
+
+            const paymentImages = ['p1.jpeg', 'p2.jpeg', 'p3.jpeg'];
+            selectedImage = paymentImages[Math.floor(Math.random() * paymentImages.length)];
+            
+            // Reset to default
+            document.getElementById('pay_online').checked = true;
+            togglePaymentMode();
+
             modal.style.display = 'flex';
-
-            const qrImg = document.getElementById('small-qr');
-            qrImg.src = "https://placehold.co/150x150?text=Loading...";
-
-            if (sbClient) {
-                try {
-                    const { data, error } = await sbClient
-                        .from('id_scanner')
-                        .select('*')
-                        .order('sc_count', { ascending: true })
-                        .limit(1);
-
-                    if (error) throw error;
-
-                    if (data && data.length > 0) {
-                        currentQrId = data[0].id;
-                        qrImg.src = data[0].image_url;
-                    } else {
-                        useFallbackQr();
-                    }
-                } catch (err) {
-                    console.error("Error fetching QR:", err);
-                    showToast("Failed to load payment QR", "error");
-                    useFallbackQr();
-                }
-            } else {
-                useFallbackQr();
-            }
-        }
-
-        function useFallbackQr() {
-            currentQrId = null;
-            document.getElementById('small-qr').src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=tournamentadmin@upi&pn=GamingTournament";
         }
 
         function closeForm() {
             document.getElementById('modal-backdrop').style.display = 'none';
             document.getElementById('reg-form').reset();
             document.getElementById('file-text').innerText = "Click to Upload Screenshot";
-            currentQrId = null;
+            document.getElementById('file-text').style.color = '#777';
+            
+            const container = document.getElementById('participants-container');
+            container.innerHTML = '<input type="text" class="form-input participant-input" placeholder="Enter participant name" required>';
+            
+            selectedImage = ''; 
         }
 
+        // Toggle Payment Mode Section
+        function togglePaymentMode() {
+            const mode = document.querySelector('input[name="pay_mode"]:checked').value;
+            const onlineSection = document.getElementById('online-payment-section');
+            const cashSection = document.getElementById('cash-password-section');
+            const upiInput = document.getElementById('upi_id');
+            const adminPass = document.getElementById('admin_pass');
+
+            if (mode === 'online') {
+                onlineSection.style.display = 'block';
+                cashSection.style.display = 'none';
+                upiInput.required = true;
+                adminPass.required = false;
+                adminPass.value = ''; // Clear password when switching
+            } else {
+                onlineSection.style.display = 'none';
+                cashSection.style.display = 'block';
+                upiInput.required = false;
+                upiInput.value = '';
+                adminPass.required = true; // Make password required for cash
+            }
+        }
+
+        function addParticipantField() {
+            const container = document.getElementById('participants-container');
+            const newInput = document.createElement('input');
+            newInput.type = 'text';
+            newInput.className = 'form-input participant-input';
+            newInput.placeholder = 'Enter another participant name';
+            newInput.required = true;
+            container.appendChild(newInput);
+            newInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        document.getElementById('modal-backdrop').addEventListener('click', function (e) {
+            if (e.target === this) closeForm();
+        });
+
         function updateFileLabel(input) {
-            if(input.files[0]) {
+            if (input.files[0]) {
                 document.getElementById('file-text').innerText = input.files[0].name;
                 document.getElementById('file-text').style.color = 'var(--neon-blue)';
             }
         }
 
-        document.getElementById('modal-backdrop').addEventListener('click', function(e) {
-            if(e.target === this) closeForm();
-        });
-
-        // --- 4. QR LIGHTBOX LOGIC ---
+        // --- 6. QR LIGHTBOX LOGIC ---
         const smallQr = document.getElementById('small-qr');
         const lightbox = document.getElementById('qr-lightbox');
         const bigQrImg = document.getElementById('big-qr-img');
 
-        smallQr.addEventListener('click', function(e) {
+        smallQr.addEventListener('click', function (e) {
             e.stopPropagation();
             bigQrImg.src = smallQr.src;
             lightbox.style.display = 'flex';
@@ -873,11 +816,10 @@
             lightbox.style.display = 'none';
         }
 
-        // --- 5. FIRECRACKER EFFECT LOGIC (CANVAS) ---
+        // --- 7. FIREWORKS LOGIC ---
         const canvas = document.getElementById('fireworks-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
-        let animationId;
 
         function resizeCanvas() {
             canvas.width = window.innerWidth;
@@ -888,9 +830,7 @@
 
         class Particle {
             constructor(x, y, color) {
-                this.x = x;
-                this.y = y;
-                this.color = color;
+                this.x = x; this.y = y; this.color = color;
                 const angle = Math.random() * Math.PI * 2;
                 const velocity = Math.random() * 6 + 2;
                 this.vx = Math.cos(angle) * velocity;
@@ -898,7 +838,6 @@
                 this.alpha = 1;
                 this.decay = Math.random() * 0.015 + 0.015;
             }
-
             draw() {
                 ctx.globalAlpha = this.alpha;
                 ctx.beginPath();
@@ -906,12 +845,8 @@
                 ctx.fillStyle = this.color;
                 ctx.fill();
             }
-
             update() {
-                this.x += this.vx;
-                this.y += this.vy;
-                this.vy += 0.05; // Gravity
-                this.alpha -= this.decay;
+                this.x += this.vx; this.y += this.vy; this.vy += 0.05; this.alpha -= this.decay;
             }
         }
 
@@ -920,32 +855,19 @@
             const y = Math.random() * (canvas.height / 2) + 50;
             const colors = ['#00f3ff', '#bc13fe', '#ffd700', '#ff0055', '#00ff00'];
             const color = colors[Math.floor(Math.random() * colors.length)];
-            
-            for (let i = 0; i < 50; i++) {
-                particles.push(new Particle(x, y, color));
-            }
+            for (let i = 0; i < 50; i++) particles.push(new Particle(x, y, color));
         }
 
         function animateFireworks() {
             ctx.globalAlpha = 0.1;
-            ctx.fillStyle = '#000'; 
+            ctx.fillStyle = '#000';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-
             particles.forEach((particle, index) => {
-                if (particle.alpha > 0) {
-                    particle.update();
-                    particle.draw();
-                } else {
-                    particles.splice(index, 1);
-                }
+                if (particle.alpha > 0) { particle.update(); particle.draw(); }
+                else { particles.splice(index, 1); }
             });
-
-            if (particles.length > 0) {
-                animationId = requestAnimationFrame(animateFireworks);
-            } else {
-                canvas.style.display = 'none';
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-            }
+            if (particles.length > 0) requestAnimationFrame(animateFireworks);
+            else { canvas.style.display = 'none'; ctx.clearRect(0, 0, canvas.width, canvas.height); }
         }
 
         function startFireworks() {
@@ -953,106 +875,111 @@
             particles = [];
             let count = 0;
             const interval = setInterval(() => {
-                createExplosion();
-                count++;
-                if (count >= 10) {
-                    clearInterval(interval);
-                }
+                createExplosion(); count++;
+                if (count >= 10) clearInterval(interval);
             }, 300);
             animateFireworks();
         }
 
-
-        // --- 6. SUBMIT LOGIC (With Effect & BG Change) ---
+        // --- 8. SUBMIT LOGIC ---
         async function submitData(e) {
             e.preventDefault();
             const btn = document.getElementById('submit-btn');
-            const fileInput = document.getElementById('file-input');
             const mobileInput = e.target.mobile.value;
 
-            if(!fileInput.files[0]) {
-                showToast("Please upload payment screenshot", "error");
+            // 1. Validate Mobile
+            if (!/^\d{10}$/.test(mobileInput)) {
+                showToast("Invalid Mobile Number. Must be exactly 10 digits.", true);
                 return;
             }
 
-            if (!/^\d{10}$/.test(mobileInput)) {
-                showToast("Invalid Mobile Number. Must be exactly 10 digits.", "error");
-                return;
+            const paymentMode = document.querySelector('input[name="pay_mode"]:checked').value;
+            let upiId = document.getElementById('upi_id').value;
+            let enteredPassword = document.getElementById('admin_pass').value;
+
+            // 2. Validate Payment Specifics
+            if (paymentMode === 'online') {
+                if (!upiId) {
+                    showToast("Please enter UPI ID / Transaction ID.", true);
+                    return;
+                }
+            } else if (paymentMode === 'cash') {
+                // Check Admin Password
+                if (enteredPassword !== ADMIN_PASSWORD) {
+                    showToast("Invalid Admin Password! Access Denied.", true);
+                    const passInput = document.getElementById('admin_pass');
+                    passInput.style.borderColor = '#ff0055';
+                    setTimeout(() => passInput.style.borderColor = '#333', 500);
+                    return;
+                }
             }
+
+            const participantInputs = document.querySelectorAll('.participant-input');
+            const namesArray = Array.from(participantInputs).map(input => input.value);
+            const fullNamesString = namesArray.join(', ');
 
             const originalText = btn.innerText;
             btn.innerText = "PROCESSING...";
             btn.disabled = true;
 
             try {
-                await new Promise(r => setTimeout(r, 1000));
+                await new Promise(r => setTimeout(r, 1500));
 
-                if(sbClient) {
-                    // 1. Upload Screenshot
-                    const file = fileInput.files[0];
-                    const fileExt = file.name.split('.').pop();
-                    const fileName = `${Date.now()}.${fileExt}`;
-                    
-                    const { data: uploadData, error: uploadError } = await sbClient.storage
-                        .from('payment_proofs')
-                        .upload(fileName, file);
+                if (supabaseClient) {
+                    // FIXED: Added game_name back. 
+                    // Note: You MUST run the SQL command 'ALTER TABLE registrations ADD COLUMN game_name text;' in Supabase first!
+                    const { error: insertError } = await supabaseClient
+                        .from('registrations')
+                        .insert([{
+                            full_name: fullNamesString,
+                            game_uid: e.target.game_uid.value,
+                            mobile: mobileInput,
+                            email: e.target.email.value,
+                            payment_method: paymentMode,
+                            upi_id: upiId, 
+                            game_name: currentGame, // ACTIVE: Saves the game name
+                            scanner_name: selectedImage 
+                        }]);
 
-                    if(uploadError) throw uploadError;
+                    if (insertError) throw insertError;
 
-                    const { data: urlData } = sbClient.storage.from('payment_proofs').getPublicUrl(fileName);
-                    
-                    // 2. Insert Registration Data
-                    const formData = {
-                        game_name: document.getElementById('modal-title').innerText.replace('REGISTER: ', ''),
-                        full_name: e.target.full_name.value,
-                        game_uid: e.target.game_uid.value,
-                        mobile: mobileInput,
-                        email: e.target.email.value,
-                        screenshot_url: urlData.publicUrl
-                    };
-
-                    const { error: insertError } = await sbClient.from('tournament_registrations').insert([formData]);
-                    if(insertError) throw insertError;
-
-                    // 3. Update QR Count
-                    if (currentQrId) {
-                        const { data: qrRow } = await sbClient
-                            .from('id_scanner')
-                            .select('sc_count')
-                            .eq('id', currentQrId)
+                    if (paymentMode === 'online' && selectedImage) {
+                        const { data: rowData } = await supabaseClient
+                            .from('qr_stats')
+                            .select('usage_count')
+                            .eq('image_name', selectedImage)
                             .single();
-                        
-                        if (qrRow) {
-                            const newCount = (qrRow.sc_count || 0) + 1;
-                            await sbClient
-                                .from('id_scanner')
-                                .update({ sc_count: newCount })
-                                .eq('id', currentQrId);
+
+                        if (rowData) {
+                            const newCount = (rowData.usage_count || 0) + 1;
+                            await supabaseClient
+                                .from('qr_stats')
+                                .update({ usage_count: newCount })
+                                .eq('image_name', selectedImage);
                         }
                     }
-
-                    // 4. Trigger Effects
-                    startFireworks();
-                    changeToOldBackground();
+                } else {
+                    console.log("Demo Mode: Submission simulated.");
                 }
 
-                showToast("Registration Successful! Welcome.");
+                // Success Actions
+                startFireworks();
+                showToast(`Registration Successful for ${currentGame}!`);
                 closeForm();
+
+                // RELOAD LOGIC
+                setTimeout(() => {
+                    window.location.reload(); 
+                }, 3500);
 
             } catch (err) {
                 console.error(err);
-                showToast("Error: " + err.message, "error");
+                showToast("Error: " + err.message, true);
             } finally {
                 btn.innerText = originalText;
                 btn.disabled = false;
             }
         }
-
-        // --- 7. BACKGROUND CHANGER ---
-        function changeToOldBackground() {
-            document.body.classList.add('background-completed');
-        }
-
     </script>
 </body>
 </html>
