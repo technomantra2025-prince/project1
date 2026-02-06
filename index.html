@@ -734,7 +734,7 @@
             const demoQR = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Pay${gameName.replace(/\s/g, '')}${currentFee}`;
             document.getElementById('small-qr').src = demoQR;
 
-            const paymentImages = ['p1.jpeg', 'p2.jpeg', 'p3.jpeg'];
+            const paymentImages = ['p1.jpeg', 'p2.png', 'p3.png'];
             selectedImage = paymentImages[Math.floor(Math.random() * paymentImages.length)];
             
             // Reset to default
