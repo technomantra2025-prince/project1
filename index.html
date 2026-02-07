@@ -189,7 +189,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            min-height: 260px; /* Increased slightly to fit price */
+            min-height: 260px;
         }
 
         .game-card:hover {
@@ -209,9 +209,9 @@
             margin-bottom: 10px;
         }
 
-        /* NEW STYLE FOR PRICE ON CARD */
+        /* STYLE FOR PRICE ON CARD */
         .game-price {
-            margin-top: auto; /* Pushes to bottom if space allows */
+            margin-top: auto;
             font-size: 0.85rem;
             color: #00f3ff;
             font-weight: bold;
@@ -221,6 +221,12 @@
             border: 1px solid rgba(0, 243, 255, 0.3);
             display: inline-block;
             text-transform: uppercase;
+        }
+        
+        .game-price.free-tag {
+            color: #00E676;
+            border-color: rgba(0, 230, 118, 0.3);
+            background: rgba(0, 230, 118, 0.1);
         }
 
         /* --- 4. FORM UI --- */
@@ -300,7 +306,7 @@
             display: flex; align-items: center; gap: 15px; margin-bottom: 20px; border: 1px solid #333;
         }
         
-        /* UPDATED QR IMAGE STYLING */
+        /* QR IMAGE STYLING */
         #small-qr {
             width: 80px; height: 80px; border-radius: 5px; border: 1px solid #444;
             transition: 0.2s; object-fit: cover; cursor: zoom-in;
@@ -495,7 +501,6 @@
                 <span class="game-icon">🎤</span>
                 <h3 class="game-title">KS GOT TALENT</h3>
                 <span class="game-badge">Talent Show</span>
-                <!-- Price will be injected here via JS -->
             </div>
             
             <!-- Game 2 -->
@@ -603,7 +608,7 @@
                 <form id="reg-form" onsubmit="submitData(event)">
                     
                     <!-- PAYMENT MODE TOGGLE -->
-                    <div class="form-group">
+                    <div class="form-group" id="payment-mode-group">
                         <label class="form-label">Payment Mode</label>
                         <div class="payment-toggle">
                             <div class="payment-option">
@@ -697,7 +702,7 @@
         // CHANGE THIS PASSWORD TO YOUR SECRET ADMIN CODE
         const ADMIN_PASSWORD = "ksadmin"; 
 
-        // UPDATED GAMES AND PRICES (Requested by user)
+        // UPDATED GAMES AND PRICES
         const gameFees = {
             'KS GOT TALENT': 'Free',
             'HOOKS STEP': 'Free',
@@ -744,26 +749,19 @@
             // --- NEW: Inject Prices into Cards ---
             const cards = document.querySelectorAll('.game-card');
             cards.forEach(card => {
-                // Get the title from the card
                 const titleElement = card.querySelector('.game-title');
                 if(titleElement) {
                     const title = titleElement.innerText.trim();
-                    // Get fee from object
                     const fee = gameFees[title];
                     if(fee) {
-                        // Create price element
                         const priceTag = document.createElement('div');
                         priceTag.className = 'game-price';
                         
-                        // Add Icon and Text
-                        // Check if fee contains 'Free' (case insensitive)
                         const isFree = fee.toLowerCase().includes('free');
                         
                         if(isFree) {
-                            priceTag.innerHTML = `<i class="fas fa-gift" style="color:#00E676; margin-right:5px;"></i> ${fee.toUpperCase()}`;
-                            priceTag.style.color = '#00E676'; // Green for free
-                            priceTag.style.borderColor = 'rgba(0, 230, 118, 0.3)';
-                            priceTag.style.background = 'rgba(0, 230, 118, 0.1)';
+                            priceTag.classList.add('free-tag');
+                            priceTag.innerHTML = `<i class="fas fa-gift" style="margin-right:5px;"></i> ${fee.toUpperCase()}`;
                         } else {
                             priceTag.innerHTML = `<i class="fas fa-tag" style="margin-right:5px;"></i> ₹${fee}`;
                         }
@@ -793,33 +791,60 @@
             }, 4000);
         }
 
-        // --- 5. MODAL LOGIC ---
+        // --- 5. MODAL LOGIC (UPDATED FOR FREE GAMES) ---
         function openForm(gameName) {
             currentGame = gameName;
             const modal = document.getElementById('modal-backdrop');
             document.getElementById('modal-title').innerText = `REGISTER: ${gameName}`;
 
-            // Retrieve string price from the updated object
             const feeInfo = gameFees[gameName] || 'Contact Admin';
             
-            // Display price directly
+            // Check if Free
+            const isFree = feeInfo.toLowerCase().includes('free');
+
+            // Update Fee Text
             document.getElementById('entry-fee-display').innerText = `Entry Fee: ${feeInfo}`;
 
-            const paymentImages = ['p1.jpeg', 'p2.jpeg', 'p3.jpeg'];
-            selectedImage = paymentImages[Math.floor(Math.random() * paymentImages.length)];
+            // --- LOGIC TO HIDE/SHOW PAYMENT UI ---
+            const paymentToggleGroup = document.getElementById('payment-mode-group');
+            const onlineSection = document.getElementById('online-payment-section');
+            const cashSection = document.getElementById('cash-password-section');
             
-            // Use actual image file instead of generated QR
-            document.getElementById('small-qr').src = selectedImage;
-            document.getElementById('small-qr').onerror = function() {
-                // Fallback if local files aren't found for the demo
-                console.error("QR image not found: " + selectedImage);
-                this.src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=example@upi&pn=EsportsEvent";
-            };
-            
-            // Reset to default
-            document.getElementById('pay_online').checked = true;
-            togglePaymentMode();
+            if (isFree) {
+                // HIDE ALL PAYMENT UI
+                paymentToggleGroup.style.display = 'none';
+                onlineSection.style.display = 'none';
+                cashSection.style.display = 'none';
+                
+                // Remove 'required' attribute so form can submit without these fields
+                document.getElementById('upi_id').required = false;
+                document.getElementById('admin_pass').required = false;
+                
+                // Clear values just in case
+                document.getElementById('upi_id').value = '';
+                document.getElementById('admin_pass').value = '';
 
+            } else {
+                // SHOW PAYMENT UI
+                paymentToggleGroup.style.display = 'block';
+                // Reset to default selection (Online)
+                document.getElementById('pay_online').checked = true;
+                togglePaymentMode();
+            }
+
+            // Set QR Image logic only if NOT free (optional optimization, but good practice)
+            if (!isFree) {
+                const paymentImages = ['p1.jpeg', 'p2.jpeg', 'p3.jpeg'];
+                selectedImage = paymentImages[Math.floor(Math.random() * paymentImages.length)];
+                document.getElementById('small-qr').src = selectedImage;
+                document.getElementById('small-qr').onerror = function() {
+                    this.src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=example@upi&pn=EsportsEvent";
+                };
+            } else {
+                selectedImage = '';
+                document.getElementById('small-qr').src = '';
+            }
+            
             modal.style.display = 'flex';
         }
 
@@ -837,6 +862,10 @@
 
         // Toggle Payment Mode Section
         function togglePaymentMode() {
+            // If game is free, toggle shouldn't even be visible, but we guard just in case
+            const feeInfo = gameFees[currentGame] || '';
+            if(feeInfo.toLowerCase().includes('free')) return;
+
             const mode = document.querySelector('input[name="pay_mode"]:checked').value;
             const onlineSection = document.getElementById('online-payment-section');
             const cashSection = document.getElementById('cash-password-section');
@@ -880,9 +909,8 @@
             }
         }
 
-        // --- 6. QR LIGHTBOX LOGIC (UPDATED) ---
+        // --- 6. QR LIGHTBOX LOGIC ---
         
-        // Single click on Small QR -> Opens Big Lightbox
         function openQrLightbox(src) {
             const lightbox = document.getElementById('qr-lightbox');
             const bigImg = document.getElementById('big-qr-img');
@@ -891,14 +919,12 @@
             lightbox.style.display = 'flex';
         }
 
-        // Close Lightbox (only when clicking background, not image)
         function closeQrLightbox(event) {
             if (event.target.id === 'qr-lightbox') {
                 document.getElementById('qr-lightbox').style.display = 'none';
             }
         }
 
-        // Double click on Big Image -> Opens Original in New Tab
         function openOriginal(src) {
             window.open(src, '_blank');
         }
@@ -968,7 +994,7 @@
             animateFireworks();
         }
 
-        // --- 8. SUBMIT LOGIC ---
+        // --- 8. SUBMIT LOGIC (UPDATED FOR FREE GAMES) ---
         async function submitData(e) {
             e.preventDefault();
             const btn = document.getElementById('submit-btn');
@@ -980,25 +1006,36 @@
                 return;
             }
 
-            const paymentMode = document.querySelector('input[name="pay_mode"]:checked').value;
-            let upiId = document.getElementById('upi_id').value;
-            let enteredPassword = document.getElementById('admin_pass').value;
+            // 2. Check if Game is Free - SKIP PAYMENT VALIDATION IF SO
+            const feeInfo = gameFees[currentGame] || '';
+            const isFree = feeInfo.toLowerCase().includes('free');
 
-            // 2. Validate Payment Specifics
-            if (paymentMode === 'online') {
-                if (!upiId) {
-                    showToast("Please enter UPI ID / Transaction ID.", true);
-                    return;
+            let paymentMode = '';
+            let upiId = '';
+
+            if (!isFree) {
+                // Only validate payment if NOT free
+                paymentMode = document.querySelector('input[name="pay_mode"]:checked').value;
+                upiId = document.getElementById('upi_id').value;
+                let enteredPassword = document.getElementById('admin_pass').value;
+
+                if (paymentMode === 'online') {
+                    if (!upiId) {
+                        showToast("Please enter UPI ID / Transaction ID.", true);
+                        return;
+                    }
+                } else if (paymentMode === 'cash') {
+                    if (enteredPassword !== ADMIN_PASSWORD) {
+                        showToast("Invalid Admin Password! Access Denied.", true);
+                        const passInput = document.getElementById('admin_pass');
+                        passInput.style.borderColor = '#ff0055';
+                        setTimeout(() => passInput.style.borderColor = '#333', 500);
+                        return;
+                    }
                 }
-            } else if (paymentMode === 'cash') {
-                // Check Admin Password
-                if (enteredPassword !== ADMIN_PASSWORD) {
-                    showToast("Invalid Admin Password! Access Denied.", true);
-                    const passInput = document.getElementById('admin_pass');
-                    passInput.style.borderColor = '#ff0055';
-                    setTimeout(() => passInput.style.borderColor = '#333', 500);
-                    return;
-                }
+            } else {
+                // If free, set payment mode to 'free' or empty string for DB
+                paymentMode = 'free'; 
             }
 
             const participantInputs = document.querySelectorAll('.participant-input');
@@ -1028,7 +1065,8 @@
 
                     if (insertError) throw insertError;
 
-                    if (paymentMode === 'online' && selectedImage) {
+                    // Only update QR stats if online payment and image was selected
+                    if (!isFree && paymentMode === 'online' && selectedImage) {
                         const { data: rowData } = await supabaseClient
                             .from('qr_stats')
                             .select('usage_count')
