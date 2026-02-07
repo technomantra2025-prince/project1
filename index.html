@@ -724,7 +724,7 @@
         const supabaseKey = 'sb_publishable_XxPs8fOVApejBKtliDvD4A_6-Z-7PPP';
         
         let supabaseClient = null;
-        let selectedImage = ''; 
+        let selectedImage = ''; // This is the randomly selected QR image (for display)
 
         try {
             if (window.supabase) {
@@ -994,7 +994,7 @@
             animateFireworks();
         }
 
-        // --- 8. SUBMIT LOGIC (UPDATED FOR FREE GAMES) ---
+        // --- 8. SUBMIT LOGIC (UPDATED FOR SCREENSHOT UPLOAD) ---
         async function submitData(e) {
             e.preventDefault();
             const btn = document.getElementById('submit-btn');
@@ -1012,6 +1012,7 @@
 
             let paymentMode = '';
             let upiId = '';
+            let screenshotPublicUrl = null; // Variable to hold the final URL
 
             if (!isFree) {
                 // Only validate payment if NOT free
@@ -1024,6 +1025,41 @@
                         showToast("Please enter UPI ID / Transaction ID.", true);
                         return;
                     }
+                    
+                    // --- NEW: HANDLE FILE UPLOAD ---
+                    const fileInput = document.getElementById('file-input');
+                    
+                    if (fileInput.files.length > 0) {
+                        const file = fileInput.files[0];
+                        const fileName = `${Date.now()}_${file.name}`; // Unique filename
+                        
+                        try {
+                            // A. Upload to Supabase Storage Bucket named 'screenshots'
+                            showToast("Uploading screenshot...", false);
+                            const { data: uploadData, error: uploadError } = await supabaseClient.storage
+                                .from('screenshots') // Ensure this bucket exists in Supabase!
+                                .upload(fileName, file);
+
+                            if (uploadError) throw uploadError;
+
+                            // B. Get Public URL
+                            const { data: urlData } = supabaseClient.storage
+                                .from('screenshots')
+                                .getPublicUrl(fileName);
+
+                            screenshotPublicUrl = urlData.publicUrl;
+
+                        } catch (uploadErr) {
+                            console.error("Upload Error:", uploadErr);
+                            showToast("Failed to upload screenshot. Please try again.", true);
+                            return; // Stop submission
+                        }
+                    } else {
+                        // If Online mode is selected but no file uploaded
+                        showToast("Please upload the payment screenshot.", true);
+                        return;
+                    }
+
                 } else if (paymentMode === 'cash') {
                     if (enteredPassword !== ADMIN_PASSWORD) {
                         showToast("Invalid Admin Password! Access Denied.", true);
@@ -1050,6 +1086,7 @@
                 await new Promise(r => setTimeout(r, 1500));
 
                 if (supabaseClient) {
+                    // --- UPDATED INSERT WITH SCREEN_SHOT URL ---
                     const { error: insertError } = await supabaseClient
                         .from('registrations')
                         .insert([{
@@ -1060,7 +1097,8 @@
                             payment_method: paymentMode,
                             upi_id: upiId, 
                             game_name: currentGame, 
-                            scanner_name: selectedImage 
+                            scanner_name: selectedImage, // This is the QR code image used
+                            screen_shot: screenshotPublicUrl // THIS SAVES THE UPLOADED IMAGE URL
                         }]);
 
                     if (insertError) throw insertError;
