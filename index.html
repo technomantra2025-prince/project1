@@ -1,1183 +1,153 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Celebration Day Registration</title>
-
-    <!-- LIBRARIES -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <!-- SUPABASE JS CLIENT -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&display=swap"
-        rel="stylesheet">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>We Are Sorry</title>
     <style>
-        /* --- 0. INTRO ANIMATION --- */
-        #intro-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            color: #333;
+            overflow: hidden; /* Prevent scrollbars for this specific centered layout */
+        }
+
+        /* Main Container for Centering */
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             height: 100vh;
-            background: #000;
-            z-index: 99999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: opacity 0.8s ease-out, visibility 0.8s;
-            overflow: hidden;
-        }
-
-        #intro-overlay.hidden {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-        }
-
-        .welcome-text {
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 900;
-            font-size: clamp(2rem, 10vw, 5rem);
-            white-space: nowrap;
-            color: #fff;
-            text-shadow: 0 0 10px #00f3ff, 0 0 20px #bc13fe;
-            animation: cinematicReveal 2.5s ease-out forwards;
-        }
-
-        @keyframes cinematicReveal {
-            0% { transform: translateY(50px) scale(0.9); opacity: 0; filter: blur(10px); }
-            100% { transform: translateY(0) scale(1); opacity: 1; filter: blur(0); }
-        }
-
-        /* --- 1. RESET & BASICS --- */
-        :root {
-            --neon-blue: #00f3ff;
-            --neon-purple: #bc13fe;
-            --neon-gold: #ffd700;
-            --bg-color: #08080c;
-            --panel-color: #161821;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            background-color: var(--bg-color);
-            color: #fff;
-            font-family: 'Rajdhani', sans-serif;
-            overflow-x: hidden;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
-
-        /* --- BACKGROUND FX --- */
-        .bg-fx-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            overflow: hidden;
-            pointer-events: none;
-        }
-
-        .pattern-bg {
-            width: 100%;
-            height: 100%;
-            background: repeating-linear-gradient(135deg,
-                    #232526 0px,
-                    #232526 60px,
-                    #23252699 70px,
-                    #414345 130px);
-        }
-
-        .cube-svg {
-            position: absolute;
-            width: 200%;
-            height: 200%;
-            left: -30%;
-            top: -20%;
-            background: transparent;
-            opacity: 0.15;
-            z-index: 1;
-            animation: cubeMove 18s linear infinite alternate;
-        }
-
-        @keyframes cubeMove {
-            from { transform: translateY(0) scale(1); }
-            to { transform: translateY(-20%) scale(1.02) rotate(1deg); }
-        }
-
-        /* --- 2. HERO SECTION --- */
-        .hero-section {
             text-align: center;
-            padding-top: 80px;
-            padding-bottom: 40px;
+            padding: 20px;
             position: relative;
-            z-index: 5;
         }
 
-        .main-title {
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 900;
-            font-size: clamp(2.5rem, 10vw, 6rem);
-            line-height: 0.9;
-            text-transform: uppercase;
-            background: linear-gradient(180deg, #ffffff 0%, #a5a5a5 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: -2px;
-            margin-bottom: 10px;
-            filter: drop-shadow(0 0 20px rgba(0, 243, 255, 0.3));
-        }
-
-        .slogan-text {
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 700;
-            font-size: clamp(1.2rem, 4vw, 2.5rem);
-            color: transparent;
-            -webkit-text-stroke: 1px var(--neon-purple);
-            text-transform: uppercase;
-            letter-spacing: 5px;
-            margin-top: 5px;
-            position: relative;
-            display: inline-block;
-        }
-
-        .slogan-text::after {
-            content: 'CELEBRATION DAYS';
-            position: absolute;
-            left: 0; top: 0;
-            width: 100%; height: 100%;
-            color: var(--neon-purple);
-            opacity: 0.2;
-            z-index: -1;
-            transform: translate(4px, 4px);
-        }
-
-        /* --- 3. GAME CARDS --- */
-        .games-container { padding: 0 20px; margin-bottom: 60px; z-index: 5; }
-        .games-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr); 
-            gap: 25px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        @media (max-width: 992px) { .games-grid { grid-template-columns: repeat(2, 1fr); } }
-        @media (max-width: 768px) { .games-grid { grid-template-columns: 1fr; } }
-
-        .game-card {
-            background: linear-gradient(160deg, #1f222e 0%, #13151c 100%);
-            border: 1px solid #333;
-            border-radius: 15px;
-            padding: 25px;
-            text-align: center;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: 260px;
-        }
-
-        .game-card:hover {
-            transform: translateY(-8px);
-            border-color: var(--neon-gold);
-            background: linear-gradient(160deg, #2a2e3d 0%, #1a1c24 100%);
-            box-shadow: 0 20px 50px rgba(255, 215, 0, 0.2);
-        }
-
-        .game-icon { font-size: 3.5rem; margin-bottom: 15px; display: block; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.5)); }
-        .game-title { font-family: 'Orbitron'; font-size: 1.2rem; font-weight: 700; color: #fff; margin-bottom: 8px; line-height: 1.2;}
-        .game-badge {
-            background: #252830; color: var(--neon-gold);
-            padding: 5px 12px; border-radius: 20px; font-size: 0.75rem;
-            text-transform: uppercase; font-weight: bold; letter-spacing: 1px;
-            border: 1px solid #333;
-            margin-bottom: 10px;
-        }
-
-        /* STYLE FOR PRICE ON CARD */
-        .game-price {
-            margin-top: auto;
-            font-size: 0.85rem;
-            color: #00f3ff;
-            font-weight: bold;
-            background: rgba(0, 243, 255, 0.1);
-            padding: 6px 12px;
-            border-radius: 6px;
-            border: 1px solid rgba(0, 243, 255, 0.3);
-            display: inline-block;
-            text-transform: uppercase;
-        }
-        
-        .game-price.free-tag {
-            color: #00E676;
-            border-color: rgba(0, 230, 118, 0.3);
-            background: rgba(0, 230, 118, 0.1);
-        }
-
-        /* --- 4. FORM UI --- */
-        #modal-backdrop {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px); z-index: 2000;
-            display: none; justify-content: center; align-items: center; padding: 20px;
-        }
-        .modal-form {
-            background: var(--panel-color); width: 100%; max-width: 480px;
-            height: 90vh; max-height: 900px; border-radius: 20px;
-            border: 1px solid #333; display: flex; flex-direction: column;
-            box-shadow: 0 0 60px rgba(0, 0, 0, 0.9); position: relative;
-            animation: popUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        @keyframes popUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-
-        .modal-body-scroll { padding: 25px; overflow-y: auto; flex: 1; }
-        .modal-body-scroll::-webkit-scrollbar { width: 6px; }
-        .modal-body-scroll::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
-
-        .modal-header {
-            padding: 20px 25px; border-bottom: 1px solid #2a2d36;
-            display: flex; justify-content: space-between; align-items: center;
-            background: #1a1d26; border-radius: 20px 20px 0 0;
-        }
-        .modal-header h3 { font-family: 'Orbitron'; font-size: 1.2rem; color: var(--neon-blue); margin: 0; text-transform: uppercase; }
-        .close-btn { background: none; border: none; color: #666; font-size: 1.5rem; cursor: pointer; transition: 0.2s; }
-        .close-btn:hover { color: #fff; transform: rotate(90deg); }
-
-        .form-group { margin-bottom: 20px; }
-        .form-label { display: block; color: #aaa; font-size: 0.85rem; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
-        .form-input {
-            width: 100%; background: #0b0c10; border: 1px solid #333;
-            padding: 12px 15px; color: #fff; border-radius: 8px;
-            font-family: 'Rajdhani'; font-size: 1rem; transition: 0.3s;
-            margin-bottom: 10px; 
-        }
-        .form-input:focus { outline: none; border-color: var(--neon-purple); box-shadow: 0 0 15px rgba(188, 19, 254, 0.2); background: #0e0f14; }
-
-        /* Payment Toggle Styles */
-        .payment-toggle {
-            display: flex;
-            gap: 10px;
+        /* The Big H1 Styling */
+        h1 {
+            font-size: clamp(3rem, 10vw, 8rem); /* Responsive font size */
+            font-weight: 800;
+            color: #2c3e50;
+            line-height: 1;
             margin-bottom: 20px;
-            background: #0b0c10;
-            padding: 5px;
-            border-radius: 10px;
-            border: 1px solid #333;
-        }
-        .payment-option { flex: 1; position: relative; }
-        .payment-option input { position: absolute; opacity: 0; cursor: pointer; width: 100%; height: 100%; z-index: 2; }
-        .payment-label {
-            display: block; text-align: center; padding: 10px; color: #666;
-            font-weight: bold; cursor: pointer; transition: 0.3s;
-            border-radius: 8px; font-size: 0.9rem;
-        }
-        .payment-option input:checked + .payment-label {
-            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
-            color: #fff; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            letter-spacing: -2px;
+            opacity: 0;
+            animation: fadeInDown 1s ease-out forwards;
         }
 
-        .add-participant-btn {
-            background: transparent; border: 1px dashed var(--neon-blue);
-            color: var(--neon-blue); padding: 10px; width: 100%;
-            border-radius: 8px; cursor: pointer; font-size: 0.85rem;
-            transition: 0.3s; margin-bottom: 15px; font-weight: 600;
-        }
-        .add-participant-btn:hover { background: rgba(0, 243, 255, 0.1); border-color: var(--neon-purple); color: var(--neon-purple); }
-
-        /* Online Payment Section */
-        #online-payment-section, #cash-password-section { animation: fadeIn 0.4s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .qr-compact {
-            background: #0b0c10; border-radius: 10px; padding: 15px;
-            display: flex; align-items: center; gap: 15px; margin-bottom: 20px; border: 1px solid #333;
-        }
-        
-        /* QR IMAGE STYLING */
-        #small-qr {
-            width: 80px; height: 80px; border-radius: 5px; border: 1px solid #444;
-            transition: 0.2s; object-fit: cover; cursor: zoom-in;
-        }
-        #small-qr:hover { border-color: var(--neon-blue); transform: scale(1.05); }
-
-        .qr-info h6 { margin: 0; color: var(--neon-gold); font-family: 'Orbitron'; font-size: 0.95rem; }
-        .qr-info p { margin: 3px 0 0; font-size: 0.8rem; color: #888; }
-
-        .upload-compact {
-            border: 2px dashed #333; border-radius: 10px; padding: 25px;
-            text-align: center; cursor: pointer; background: #0f1115; transition: 0.3s;
-        }
-        .upload-compact:hover { border-color: var(--neon-blue); background: #15181e; }
-        .upload-compact i { font-size: 1.8rem; color: #555; margin-bottom: 8px; display: block; }
-        .upload-compact p { font-size: 0.85rem; color: #777; margin: 0; }
-
-        .btn-submit {
-            width: 100%; padding: 15px;
-            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
-            color: #fff; border: none; border-radius: 8px;
-            font-family: 'Orbitron'; font-weight: 900; font-size: 1rem;
-            text-transform: uppercase; cursor: pointer; margin-top: 10px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3); transition: 0.3s;
-            position: relative; overflow: hidden;
-        }
-        .btn-submit:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 0 20px rgba(188, 19, 254, 0.4); }
-        .btn-submit:disabled { background: #333; color: #666; cursor: not-allowed; transform: none; box-shadow: none; }
-
-        /* --- 5. TOAST --- */
-        .toast-container {
-            position: fixed; top: 20px; right: 20px; z-index: 3000;
-            display: flex; flex-direction: column; gap: 10px;
-        }
-        .toast {
-            background: #1f222e; color: #fff; padding: 15px 25px;
-            border-left: 4px solid var(--neon-blue); border-radius: 4px;
-            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.6);
-            min-width: 300px; animation: slideIn 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-            display: flex; align-items: center; gap: 12px; font-weight: 500;
-        }
-        .toast.error { border-left-color: #ff0055; }
-        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-
-        /* --- 6. QR LIGHTBOX --- */
-        #qr-lightbox {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.95); z-index: 5000;
-            display: none; justify-content: center; align-items: center;
-            flex-direction: column; backdrop-filter: blur(5px);
-            cursor: default;
-        }
-        .lightbox-content-wrapper {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            max-width: 90%;
-            max-height: 85%;
+        /* Subtitle/Explanation Text */
+        p.message {
+            font-size: clamp(1rem, 2vw, 1.5rem);
+            color: #576574;
+            max-width: 600px;
+            line-height: 1.6;
+            margin-bottom: 40px;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 0.5s forwards; /* Delayed animation */
         }
 
-        #big-qr-img {
-            max-width: 100%;
-            max-height: 70vh;
-            border-radius: 15px;
-            border: 2px solid var(--neon-blue);
-            box-shadow: 0 0 60px rgba(0, 243, 255, 0.3);
-            animation: zoomIn 0.3s ease-out;
-            cursor: zoom-in; 
-        }
-        
-        .lightbox-hint {
-            margin-top: 15px;
-            color: #aaa;
-            font-family: 'Rajdhani';
-            font-size: 0.9rem;
-            letter-spacing: 1px;
-            background: rgba(255,255,255,0.05);
-            padding: 8px 16px;
-            border-radius: 20px;
-            text-align: center;
-        }
-        
-        .lightbox-close-hint {
-            margin-top: 10px;
-            color: #555;
-            font-size: 0.8rem;
+        /* Button Styling */
+        .action-btn {
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: white;
+            background-color: #3498db;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+            transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 1s forwards; /* More delayed animation */
         }
 
-        @keyframes zoomIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-
-        /* --- 7. FIREWORKS CANVAS --- */
-        #fireworks-canvas {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 9999; display: none;
+        .action-btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
         }
 
-        /* --- 8. FOOTER --- */
-        footer {
-            margin-top: auto;
-            background: #050505;
-            border-top: 1px solid #222;
-            padding: 40px 20px;
-            position: relative;
-            z-index: 5;
+        .action-btn:active {
+            transform: translateY(1px);
         }
-        .footer-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 30px;
+
+        /* Decorative Background Element */
+        .circle-bg {
+            position: absolute;
+            width: 60vw;
+            height: 60vw;
+            background: radial-gradient(circle, rgba(52, 152, 219, 0.05) 0%, rgba(255, 255, 255, 0) 70%);
+            border-radius: 50%;
+            z-index: -1;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
-        .footer-info h4 {
-            font-family: 'Orbitron';
-            color: #fff;
-            font-size: 1.2rem;
-            margin-bottom: 12px;
-            letter-spacing: 1px;
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        .footer-info p {
-            color: #888;
-            font-size: 0.9rem;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        .footer-info i { color: var(--neon-purple); width: 20px; }
-        .footer-right { text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 15px; }
-        .socials { display: flex; gap: 15px; }
-        .socials a {
-            color: #fff; font-size: 1.3rem; background: rgba(255,255,255,0.05);
-            width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
-            border-radius: 50%; transition: 0.3s; text-decoration: none;
-        }
-        .socials a:hover { color: var(--neon-blue); background: rgba(0, 243, 255, 0.1); transform: translateY(-3px); }
-        .dev-credit { font-size: 0.85rem; color: var(--neon-blue); font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
-        .copyright { font-size: 0.8rem; color: #555; }
-        @media (max-width: 768px) {
-            .footer-container { flex-direction: column; text-align: center; }
-            .footer-info p { justify-content: center; }
-            .footer-right { text-align: center; align-items: center; width: 100%; }
+
+        /* Responsive Adjustments */
+        @media (max-width: 600px) {
+            h1 {
+                letter-spacing: -1px;
+            }
+            .action-btn {
+                width: 100%;
+                max-width: 300px;
+            }
         }
     </style>
 </head>
-
 <body>
 
-    <!-- INTRO OVERLAY -->
-    <div id="intro-overlay">
-        <h1 class="welcome-text">WELCOME</h1>
-    </div>
+    <!-- Decorative Background Circle -->
+    <div class="circle-bg"></div>
 
-    <!-- BACKGROUND FX -->
-    <div class="bg-fx-container">
-        <div class="pattern-bg"></div>
-        <svg class="cube-svg" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-                <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" style="stop-color:rgb(0,243,255);stop-opacity:0.2" />
-                    <stop offset="100%" style="stop-color:rgb(188,19,254);stop-opacity:0.2" />
-                </linearGradient>
-            </defs>
-            <path fill="url(#grad1)" d="M250,50 L450,150 L450,350 L250,450 L50,350 L50,150 Z" />
-            <path fill="none" stroke="#00f3ff" stroke-width="2" d="M250,50 L450,150 L450,350 L250,450 L50,350 L50,150 Z" opacity="0.5" />
-        </svg>
-    </div>
-
-    <!-- FIREWORKS CANVAS -->
-    <canvas id="fireworks-canvas"></canvas>
-
-    <!-- TOAST CONTAINER -->
-    <div class="toast-container" id="toast-container"></div>
-
-    <!-- HERO SECTION -->
-    <div class="hero-section">
-        <h1 class="main-title">KS COLLEGE</h1>
-        <div class="slogan-text">CELEBRATION DAYS</div>
-        <p style="color: #666; margin-top: 15px; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 2px;">
-            Event Registration Portal</p>
-    </div>
-
-    <!-- GAMES GRID -->
-    <div class="games-container">
-        <div class="games-grid">
-            
-            <!-- Game 1 -->
-            <div class="game-card" onclick="openForm('KS GOT TALENT')">
-                <span class="game-icon">🎤</span>
-                <h3 class="game-title">KS GOT TALENT</h3>
-                <span class="game-badge">Talent Show</span>
-            </div>
-            
-            <!-- Game 2 -->
-            <div class="game-card" onclick="openForm('HOOKS STEP')">
-                <span class="game-icon">💃</span>
-                <h3 class="game-title">HOOKS STEP</h3>
-                <span class="game-badge">Dance Off</span>
-            </div>
-            
-            <!-- Game 3 -->
-            <div class="game-card" onclick="openForm('TUG OF WAR')">
-                <span class="game-icon">🪢</span>
-                <h3 class="game-title">TUG OF WAR</h3>
-                <span class="game-badge">Strength Battle</span>
-            </div>
-            
-            <!-- Game 4 -->
-            <div class="game-card" onclick="openForm('BGMI - FREE FIRE')">
-                <span class="game-icon">🎮</span>
-                <h3 class="game-title">BGMI - FREE FIRE</h3>
-                <span class="game-badge">Mobile Gaming</span>
-            </div>
-            
-            <!-- Game 5 -->
-            <div class="game-card" onclick="openForm('CRICKET')">
-                <span class="game-icon">🏏</span>
-                <h3 class="game-title">CRICKET</h3>
-                <span class="game-badge">Team Sport</span>
-            </div>
-            
-            <!-- Game 6 -->
-            <div class="game-card" onclick="openForm('TRIPPY TROUBLES')">
-                <span class="game-icon">🌪️</span>
-                <h3 class="game-title">TRIPPY TROUBLES</h3>
-                <span class="game-badge">Fun Event</span>
-            </div>
-            
-            <!-- Game 7 -->
-            <div class="game-card" onclick="openForm('TREASURE HUNT')">
-                <span class="game-icon">🗺️</span>
-                <h3 class="game-title">TREASURE HUNT</h3>
-                <span class="game-badge">Adventure</span>
-            </div>
-            
-            <!-- Game 8 -->
-            <div class="game-card" onclick="openForm('MUSICAL CHAIR')">
-                <span class="game-icon">🪑</span>
-                <h3 class="game-title">MUSICAL CHAIR</h3>
-                <span class="game-badge">Classic Game</span>
-            </div>
-            
-            <!-- Game 9 -->
-            <div class="game-card" onclick="openForm('COMPLETE THE LYRICS')">
-                <span class="game-icon">🎵</span>
-                <h3 class="game-title">COMPLETE THE LYRICS</h3>
-                <span class="game-badge">Music Quiz</span>
-            </div>
-            
-            <!-- Game 10 -->
-            <div class="game-card" onclick="openForm('WHISPER CHALLENGE')">
-                <span class="game-icon">🗣️</span>
-                <h3 class="game-title">WHISPER CHALLENGE</h3>
-                <span class="game-badge">Audio Game</span>
-            </div>
-            
-            <!-- Game 11 -->
-            <div class="game-card" onclick="openForm('STUDENT OF THE YEAR')">
-                <span class="game-icon">🏆</span>
-                <h3 class="game-title">STUDENT OF THE YEAR</h3>
-                <span class="game-badge">Main Title</span>
-            </div>
-            
-        </div>
-    </div>
-
-    <!-- FOOTER -->
-    <footer>
-        <div class="footer-container">
-            <div class="footer-info">
-                <h4>KS School of Business Management and IT</h4>
-                <p><i class="fas fa-map-marker-alt"></i> Gujarat University, Navrangpura, Ahmedabad, Gujarat 380009</p>
-                <p><i class="fas fa-phone-alt"></i> +91 9227906435</p>
-            </div>
-            <div class="footer-right">
-                <div class="socials">
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-discord"></i></a>
-                    <a href="#"><i class="fab fa-youtube"></i></a>
-                </div>
-                <p class="dev-credit">Developed by Prajapati Prince</p>
-                <p class="copyright">&copy; 2026 Celebration Days.</p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- MODAL FORM -->
-    <div id="modal-backdrop">
-        <div class="modal-form">
-            <div class="modal-header">
-                <h3 id="modal-title">REGISTER: GAME</h3>
-                <button class="close-btn" onclick="closeForm()">&times;</button>
-            </div>
-
-            <div class="modal-body-scroll">
-                <form id="reg-form" onsubmit="submitData(event)">
-                    
-                    <!-- PAYMENT MODE TOGGLE -->
-                    <div class="form-group" id="payment-mode-group">
-                        <label class="form-label">Payment Mode</label>
-                        <div class="payment-toggle">
-                            <div class="payment-option">
-                                <input type="radio" name="pay_mode" id="pay_cash" value="cash" onchange="togglePaymentMode()">
-                                <label for="pay_cash" class="payment-label">Cash (Hand)</label>
-                            </div>
-                            <div class="payment-option">
-                                <input type="radio" name="pay_mode" id="pay_online" value="online" checked onchange="togglePaymentMode()">
-                                <label for="pay_online" class="payment-label">Online (UPI)</label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- DYNAMIC PARTICIPANT NAMES -->
-                    <div class="form-group">
-                        <label class="form-label">Participant Name(s)</label>
-                        <div id="participants-container">
-                            <input type="text" class="form-input participant-input" placeholder="Enter participant name" required>
-                        </div>
-                        <button type="button" class="add-participant-btn" onclick="addParticipantField()">+ Add Another Participant</button>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">ROLL NUMBER</label>
-                        <input type="text" name="game_uid" class="form-input" placeholder="ID Number" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Mobile Number</label>
-                        <input type="tel" name="mobile" class="form-input" placeholder="10 digit number"
-                            pattern="[0-9]{10}" maxlength="10" title="Please enter exactly 10 digits" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Email</label>
-                        <input type="email" name="email" class="form-input" placeholder="For confirmation" required>
-                    </div>
-
-                    <!-- ONLINE PAYMENT SECTION -->
-                    <div id="online-payment-section">
-                        <div class="form-group">
-                            <label class="form-label">UPI ID / Transaction ID</label>
-                            <input type="text" id="upi_id" name="upi_id" class="form-input" placeholder="Enter UPI ID or Txn ID">
-                        </div>
-
-                        <div class="qr-compact">
-                            <img id="small-qr" src="" alt="Payment QR Code" onclick="openQrLightbox(this.src)">
-                            <div class="qr-info">
-                                <h6 id="entry-fee-display">Entry Fee: ₹0</h6>
-                                <p>Tap QR to expand</p>
-                            </div>
-                        </div>
-
-                        <div class="upload-compact" onclick="document.getElementById('file-input').click()">
-                            <input type="file" id="file-input" hidden accept="image/*" onchange="updateFileLabel(this)">
-                            <i class="fas fa-cloud-upload-alt"></i>
-                            <p id="file-text">Click to Upload Screenshot</p>
-                        </div>
-                    </div>
-
-                    <!-- CASH PASSWORD SECTION -->
-                    <div id="cash-password-section" style="display: none;">
-                        <div class="form-group">
-                            <label class="form-label" style="color: #ff0055;">Admin Verification Required</label>
-                            <p style="font-size: 0.8rem; color: #888; margin-bottom: 10px;">Please ask the administrator to enter the code to approve cash payment.</p>
-                            <div style="position: relative;">
-                                <input type="password" id="admin_pass" class="form-input" placeholder="Enter Admin Password" style="padding-left: 40px;">
-                                <i class="fas fa-lock" style="position: absolute; left: 15px; top: 15px; color: #666;"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="btn-submit" id="submit-btn">CONFIRM REGISTRATION</button>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- QR LIGHTBOX OVERLAY -->
-    <div id="qr-lightbox" onclick="closeQrLightbox(event)">
-        <div class="lightbox-content-wrapper">
-            <img id="big-qr-img" src="" alt="Large QR Code" ondblclick="openOriginal(this.src)">
-            <div class="lightbox-hint"><i class="fas fa-mouse-pointer"></i> Double click image for Original</div>
-            <div class="lightbox-close-hint">Click background to close</div>
-        </div>
-    </div>
-
-    <script>
-        // --- 1. CONFIGURATION ---
+    <!-- Main Content Area -->
+    <main class="container">
+        <!-- The Requested Big H1 -->
+        <h1>Sorry.</h1>
         
-        // CHANGE THIS PASSWORD TO YOUR SECRET ADMIN CODE
-        const ADMIN_PASSWORD = "ksadmin"; 
-
-        // UPDATED GAMES AND PRICES
-        const gameFees = {
-            'KS GOT TALENT': 'Free',
-            'HOOKS STEP': 'Free',
-            'TUG OF WAR': "40/per person",
-            'BGMI - FREE FIRE': "40/per person",
-            'CRICKET': "300/per team",
-            'TRIPPY TROUBLES': "20/per person",
-            'TREASURE HUNT': "40/per person",
-            'MUSICAL CHAIR': "free",
-            'COMPLETE THE LYRICS': "free",
-            'WHISPER CHALLENGE': "25/per person",
-            'STUDENT OF THE YEAR': "50/per person"
-        };
-
-        let currentGame = '';
-
-        // --- 2. SUPABASE SETUP ---
-        const supabaseUrl = 'https://uttqltazlrfswyflwcnk.supabase.co'; 
-        const supabaseKey = 'sb_publishable_XxPs8fOVApejBKtliDvD4A_6-Z-7PPP';
+        <!-- Supporting Message -->
+        <p class="message">
+            We sincerely apologize for the inconvenience. Something went wrong on our end, and we are working hard to fix it.
+        </p>
         
-        let supabaseClient = null;
-        let selectedImage = ''; // This is the randomly selected QR image (for display)
+        <!-- Call to Action -->
+        <a href="#" class="action-btn">Return Home</a>
+    </main>
 
-        try {
-            if (window.supabase) {
-                supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
-            } else {
-                console.warn("Supabase library not loaded.");
-            }
-        } catch (e) {
-            console.error("Supabase Init Error:", e);
-        }
-
-        // --- 3. INTRO & CARD LOGIC ---
-        window.addEventListener('load', () => {
-            const introOverlay = document.getElementById('intro-overlay');
-            setTimeout(() => {
-                introOverlay.classList.add('hidden');
-                setTimeout(() => {
-                    introOverlay.style.display = 'none';
-                }, 800);
-            }, 3000);
-
-            // --- NEW: Inject Prices into Cards ---
-            const cards = document.querySelectorAll('.game-card');
-            cards.forEach(card => {
-                const titleElement = card.querySelector('.game-title');
-                if(titleElement) {
-                    const title = titleElement.innerText.trim();
-                    const fee = gameFees[title];
-                    if(fee) {
-                        const priceTag = document.createElement('div');
-                        priceTag.className = 'game-price';
-                        
-                        const isFree = fee.toLowerCase().includes('free');
-                        
-                        if(isFree) {
-                            priceTag.classList.add('free-tag');
-                            priceTag.innerHTML = `<i class="fas fa-gift" style="margin-right:5px;"></i> ${fee.toUpperCase()}`;
-                        } else {
-                            priceTag.innerHTML = `<i class="fas fa-tag" style="margin-right:5px;"></i> ₹${fee}`;
-                        }
-                        
-                        card.appendChild(priceTag);
-                    }
-                }
-            });
-        });
-
-        // --- 4. TOAST NOTIFICATION ---
-        function showToast(msg, isError = false) {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = isError ? 'toast error' : 'toast';
-            
-            let icon = isError ? '<i class="fas fa-exclamation-circle" style="color:#ff0055"></i>' : '<i class="fas fa-check-circle" style="color:var(--neon-blue)"></i>';
-            
-            toast.innerHTML = `${icon} <span>${msg}</span>`;
-            container.appendChild(toast);
-            
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                toast.style.transform = 'translateX(100%)';
-                toast.style.transition = 'all 0.3s ease';
-                setTimeout(() => toast.remove(), 300);
-            }, 4000);
-        }
-
-        // --- 5. MODAL LOGIC (UPDATED FOR FREE GAMES) ---
-        function openForm(gameName) {
-            currentGame = gameName;
-            const modal = document.getElementById('modal-backdrop');
-            document.getElementById('modal-title').innerText = `REGISTER: ${gameName}`;
-
-            const feeInfo = gameFees[gameName] || 'Contact Admin';
-            
-            // Check if Free
-            const isFree = feeInfo.toLowerCase().includes('free');
-
-            // Update Fee Text
-            document.getElementById('entry-fee-display').innerText = `Entry Fee: ${feeInfo}`;
-
-            // --- LOGIC TO HIDE/SHOW PAYMENT UI ---
-            const paymentToggleGroup = document.getElementById('payment-mode-group');
-            const onlineSection = document.getElementById('online-payment-section');
-            const cashSection = document.getElementById('cash-password-section');
-            
-            if (isFree) {
-                // HIDE ALL PAYMENT UI
-                paymentToggleGroup.style.display = 'none';
-                onlineSection.style.display = 'none';
-                cashSection.style.display = 'none';
-                
-                // Remove 'required' attribute so form can submit without these fields
-                document.getElementById('upi_id').required = false;
-                document.getElementById('admin_pass').required = false;
-                
-                // Clear values just in case
-                document.getElementById('upi_id').value = '';
-                document.getElementById('admin_pass').value = '';
-
-            } else {
-                // SHOW PAYMENT UI
-                paymentToggleGroup.style.display = 'block';
-                // Reset to default selection (Online)
-                document.getElementById('pay_online').checked = true;
-                togglePaymentMode();
-            }
-
-            // Set QR Image logic only if NOT free (optional optimization, but good practice)
-            if (!isFree) {
-                const paymentImages = ['p1.jpeg', 'p2.jpeg', 'p3.jpeg'];
-                selectedImage = paymentImages[Math.floor(Math.random() * paymentImages.length)];
-                document.getElementById('small-qr').src = selectedImage;
-                document.getElementById('small-qr').onerror = function() {
-                    this.src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=example@upi&pn=EsportsEvent";
-                };
-            } else {
-                selectedImage = '';
-                document.getElementById('small-qr').src = '';
-            }
-            
-            modal.style.display = 'flex';
-        }
-
-        function closeForm() {
-            document.getElementById('modal-backdrop').style.display = 'none';
-            document.getElementById('reg-form').reset();
-            document.getElementById('file-text').innerText = "Click to Upload Screenshot";
-            document.getElementById('file-text').style.color = '#777';
-            
-            const container = document.getElementById('participants-container');
-            container.innerHTML = '<input type="text" class="form-input participant-input" placeholder="Enter participant name" required>';
-            
-            selectedImage = ''; 
-        }
-
-        // Toggle Payment Mode Section (UPDATED PER USER REQUEST)
-        function togglePaymentMode() {
-            // If game is free, toggle shouldn't even be visible, but we guard just in case
-            const feeInfo = gameFees[currentGame] || '';
-            if(feeInfo.toLowerCase().includes('free')) return;
-
-            const mode = document.querySelector('input[name="pay_mode"]:checked').value;
-            const onlineSection = document.getElementById('online-payment-section');
-            const cashSection = document.getElementById('cash-password-section');
-            const upiInput = document.getElementById('upi_id');
-            const adminPass = document.getElementById('admin_pass');
-            const smallQr = document.getElementById('small-qr');
-
-            if (mode === 'online') {
-                onlineSection.style.display = 'block';
-                cashSection.style.display = 'none';
-                upiInput.required = true;
-                adminPass.required = false;
-                adminPass.value = ''; 
-                
-                // If we switched from Cash (where we cleared the image), we need to restore it for Online
-                if (!selectedImage) {
-                    const paymentImages = ['p1.jpeg', 'p2.jpeg', 'p3.jpeg'];
-                    selectedImage = paymentImages[Math.floor(Math.random() * paymentImages.length)];
-                    smallQr.src = selectedImage;
-                    smallQr.onerror = function() {
-                        this.src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=example@upi&pn=EsportsEvent";
-                    };
-                }
-
-            } else { // mode === 'cash'
-                onlineSection.style.display = 'none';
-                cashSection.style.display = 'block';
-                upiInput.required = false;
-                upiInput.value = '';
-                adminPass.required = true; 
-
-                // --- USER REQUESTED LOGIC: TREAT CASH LIKE FREE ---
-                // Clear the image variable and source since Cash doesn't need a QR
-                selectedImage = '';
-                smallQr.src = '';
-            }
-        }
-
-        function addParticipantField() {
-            const container = document.getElementById('participants-container');
-            const newInput = document.createElement('input');
-            newInput.type = 'text';
-            newInput.className = 'form-input participant-input';
-            newInput.placeholder = 'Enter another participant name';
-            newInput.required = true;
-            container.appendChild(newInput);
-            newInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-
-        document.getElementById('modal-backdrop').addEventListener('click', function (e) {
-            if (e.target === this) closeForm();
-        });
-
-        function updateFileLabel(input) {
-            if (input.files[0]) {
-                document.getElementById('file-text').innerText = input.files[0].name;
-                document.getElementById('file-text').style.color = 'var(--neon-blue)';
-            }
-        }
-
-        // --- 6. QR LIGHTBOX LOGIC ---
-        
-        function openQrLightbox(src) {
-            const lightbox = document.getElementById('qr-lightbox');
-            const bigImg = document.getElementById('big-qr-img');
-            
-            bigImg.src = src;
-            lightbox.style.display = 'flex';
-        }
-
-        function closeQrLightbox(event) {
-            if (event.target.id === 'qr-lightbox') {
-                document.getElementById('qr-lightbox').style.display = 'none';
-            }
-        }
-
-        function openOriginal(src) {
-            window.open(src, '_blank');
-        }
-
-        // --- 7. FIREWORKS LOGIC ---
-        const canvas = document.getElementById('fireworks-canvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
-
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
-
-        class Particle {
-            constructor(x, y, color) {
-                this.x = x; this.y = y; this.color = color;
-                const angle = Math.random() * Math.PI * 2;
-                const velocity = Math.random() * 6 + 2;
-                this.vx = Math.cos(angle) * velocity;
-                this.vy = Math.sin(angle) * velocity;
-                this.alpha = 1;
-                this.decay = Math.random() * 0.015 + 0.015;
-            }
-            draw() {
-                ctx.globalAlpha = this.alpha;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);
-                ctx.fillStyle = this.color;
-                ctx.fill();
-            }
-            update() {
-                this.x += this.vx; this.y += this.vy; this.vy += 0.05; this.alpha -= this.decay;
-            }
-        }
-
-        function createExplosion() {
-            const x = Math.random() * canvas.width;
-            const y = Math.random() * (canvas.height / 2) + 50;
-            const colors = ['#00f3ff', '#bc13fe', '#ffd700', '#ff0055', '#00ff00'];
-            const color = colors[Math.floor(Math.random() * colors.length)];
-            for (let i = 0; i < 50; i++) particles.push(new Particle(x, y, color));
-        }
-
-        function animateFireworks() {
-            ctx.globalAlpha = 0.1;
-            ctx.fillStyle = '#000';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            particles.forEach((particle, index) => {
-                if (particle.alpha > 0) { particle.update(); particle.draw(); }
-                else { particles.splice(index, 1); }
-            });
-            if (particles.length > 0) requestAnimationFrame(animateFireworks);
-            else { canvas.style.display = 'none'; ctx.clearRect(0, 0, canvas.width, canvas.height); }
-        }
-
-        function startFireworks() {
-            canvas.style.display = 'block';
-            particles = [];
-            let count = 0;
-            const interval = setInterval(() => {
-                createExplosion(); count++;
-                if (count >= 10) clearInterval(interval);
-            }, 300);
-            animateFireworks();
-        }
-
-        // --- 8. SUBMIT LOGIC (FIXED FOR DB CONSTRAINTS) ---
-        async function submitData(e) {
-            e.preventDefault();
-            const btn = document.getElementById('submit-btn');
-            const mobileInput = e.target.mobile.value;
-
-            // 1. Validate Mobile
-            if (!/^\d{10}$/.test(mobileInput)) {
-                showToast("Invalid Mobile Number. Must be exactly 10 digits.", true);
-                return;
-            }
-
-            // 2. Check if Game is Free - SKIP PAYMENT VALIDATION IF SO
-            const feeInfo = gameFees[currentGame] || '';
-            const isFree = feeInfo.toLowerCase().includes('free');
-
-            let paymentMode = '';
-            let upiId = '';
-            let screenshotPublicUrl = null; // Variable to hold the final URL
-
-            if (!isFree) {
-                // Only validate payment if NOT free
-                paymentMode = document.querySelector('input[name="pay_mode"]:checked').value;
-                upiId = document.getElementById('upi_id').value;
-                let enteredPassword = document.getElementById('admin_pass').value;
-
-                if (paymentMode === 'online') {
-                    if (!upiId) {
-                        showToast("Please enter UPI ID / Transaction ID.", true);
-                        return;
-                    }
-                    
-                    // --- HANDLE FILE UPLOAD ---
-                    const fileInput = document.getElementById('file-input');
-                    
-                    if (fileInput.files.length > 0) {
-                        const file = fileInput.files[0];
-                        const fileName = `${Date.now()}_${file.name}`; // Unique filename
-                        
-                        try {
-                            // A. Upload to Supabase Storage Bucket named 'screenshots'
-                            showToast("Uploading screenshot...", false);
-                            const { data: uploadData, error: uploadError } = await supabaseClient.storage
-                                .from('screenshots') // Ensure this bucket exists in Supabase!
-                                .upload(fileName, file);
-
-                            if (uploadError) throw uploadError;
-
-                            // B. Get Public URL
-                            const { data: urlData } = supabaseClient.storage
-                                .from('screenshots')
-                                .getPublicUrl(fileName);
-
-                            screenshotPublicUrl = urlData.publicUrl;
-
-                        } catch (uploadErr) {
-                            console.error("Upload Error:", uploadErr);
-                            showToast("Failed to upload screenshot. Please try again.", true);
-                            return; // Stop submission
-                        }
-                    } else {
-                        // If Online mode is selected but no file uploaded
-                        showToast("Please upload the payment screenshot.", true);
-                        return;
-                    }
-
-                } else if (paymentMode === 'cash') {
-                    if (enteredPassword !== ADMIN_PASSWORD) {
-                        showToast("Invalid Admin Password! Access Denied.", true);
-                        const passInput = document.getElementById('admin_pass');
-                        passInput.style.borderColor = '#ff0055';
-                        setTimeout(() => passInput.style.borderColor = '#333', 500);
-                        return;
-                    }
-                }
-            } else {
-                // If free, set payment mode to 'free' or empty string for DB
-                paymentMode = 'free'; 
-            }
-
-            const participantInputs = document.querySelectorAll('.participant-input');
-            const namesArray = Array.from(participantInputs).map(input => input.value);
-            const fullNamesString = namesArray.join(', ');
-
-            const originalText = btn.innerText;
-            btn.innerText = "PROCESSING...";
-            btn.disabled = true;
-
-            try {
-                await new Promise(r => setTimeout(r, 1500));
-
-                if (supabaseClient) {
-                    
-                    // --- DETERMINE FINAL VALUES FOR DATABASE ---
-                    let final_upi_id = upiId;
-                    let final_scanner_name = selectedImage;
-                    let final_screen_shot = screenshotPublicUrl;
-
-                    // --- FIX FOR DB CONSTRAINT: USE "CASH" INSTEAD OF NULL ---
-                    if (paymentMode === 'cash') {
-                        final_upi_id = "CASH";
-                        final_scanner_name = "CASH";
-                        final_screen_shot = "CASH";
-                    } 
-                    // For Free events, we can try null, but if DB blocks it, use "FREE"
-                    else if (paymentMode === 'free') {
-                        // Assuming Free works with nulls. If not, change to "FREE"
-                        final_upi_id = null;
-                        final_scanner_name = null;
-                        final_screen_shot = null;
-                    }
-
-                    // --- INSERT DATA ---
-                    const { error: insertError } = await supabaseClient
-                        .from('registrations')
-                        .insert([{
-                            full_name: fullNamesString,
-                            game_uid: e.target.game_uid.value,
-                            mobile: mobileInput,
-                            email: e.target.email.value,
-                            payment_method: paymentMode,
-                            upi_id: final_upi_id,         // Now sends "CASH" instead of null
-                            game_name: currentGame, 
-                            scanner_name: final_scanner_name, // Now sends "CASH" instead of null
-                            screen_shot: final_screen_shot    // Now sends "CASH" instead of null
-                        }]);
-
-                    if (insertError) throw insertError;
-
-                    // Only update QR stats if online payment and image was selected
-                    if (!isFree && paymentMode === 'online' && selectedImage && selectedImage !== "CASH") {
-                        const { data: rowData } = await supabaseClient
-                            .from('qr_stats')
-                            .select('usage_count')
-                            .eq('image_name', selectedImage)
-                            .single();
-
-                        if (rowData) {
-                            const newCount = (rowData.usage_count || 0) + 1;
-                            await supabaseClient
-                                .from('qr_stats')
-                                .update({ usage_count: newCount })
-                                .eq('image_name', selectedImage);
-                        }
-                    }
-                } else {
-                    console.log("Demo Mode: Submission simulated.");
-                }
-
-                // Success Actions
-                startFireworks();
-                showToast(`Registration Successful for ${currentGame}!`);
-                closeForm();
-
-                // RELOAD LOGIC
-                setTimeout(() => {
-                    window.location.reload(); 
-                }, 3500);
-
-            } catch (err) {
-                console.error(err);
-                showToast("Error: " + err.message, true);
-            } finally {
-                btn.innerText = originalText;
-                btn.disabled = false;
-            }
-        }
-    </script>
 </body>
 </html>
